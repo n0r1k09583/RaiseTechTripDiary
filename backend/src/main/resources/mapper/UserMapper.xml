@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.raisetech.tripdiary.mapper.UserMapper">
+
+  <sql id="selectUser">
+    SELECT id, email, username, display_name, password_digest, created_at, updated_at
+    FROM users
+  </sql>
+
+  <select id="findById" resultType="User">
+    <include refid="selectUser"/>
+    WHERE id = #{id}
+  </select>
+
+  <select id="findByEmail" resultType="User">
+    <include refid="selectUser"/>
+    WHERE email = #{email}
+  </select>
+
+  <select id="findByUsername" resultType="User">
+    <include refid="selectUser"/>
+    WHERE username = #{username}
+  </select>
+
+  <select id="findProfile" resultType="Profile">
+    SELECT u.id, u.username, u.display_name,
+           (SELECT COUNT(*) FROM follows f WHERE f.follower_id = u.id) AS following_count,
+           (SELECT COUNT(*) FROM follows f WHERE f.followee_id = u.id) AS follower_count,
+           (SELECT COUNT(*) FROM follows f
+            WHERE f.follower_id = #{viewerId} AND f.followee_id = u.id) AS followed_by_me
+    FROM users u
+    WHERE u.username = #{username}
+  </select>
+
+  <select id="search" resultType="UserSummary">
+    SELECT u.id, u.username, u.display_name,
+           (SELECT COUNT(*) FROM follows f
+            WHERE f.follower_id = #{viewerId} AND f.followee_id = u.id) AS followed_by_me
+    FROM users u
+    WHERE
+    <foreach collection="patterns" item="p" separator=" OR ">
+      LOWER(u.username) LIKE #{p} OR LOWER(u.display_name) LIKE #{p}
+    </foreach>
+    ORDER BY u.username ASC
+    LIMIT 20
+  </select>
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO users (email, username, display_name, password_digest)
+    VALUES (#{email}, #{username}, #{displayName}, #{passwordDigest})
+  </insert>
+
+  <select id="count" resultType="int">
+    SELECT COUNT(*) FROM users
+  </select>
+</mapper>

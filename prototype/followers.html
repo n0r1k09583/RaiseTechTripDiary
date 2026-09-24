@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>フォロワー — 課題提出</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-page="followers">
+  <main class="page" id="shell">
+    <section class="card feed-card">
+      <div class="sheet-pad"><h1 id="title">フォロワー</h1></div>
+      <div class="tabs">
+        <a class="tab" data-kind="following" href="following.html">フォロー中</a>
+        <a class="tab active" data-kind="followers" href="followers.html">フォロワー</a>
+      </div>
+      <div id="list" style="padding:8px 16px 16px;"></div>
+    </section>
+  </main>
+  <div class="modal-bg" id="modal-bg"><div class="modal"></div></div>
+  <script src="js/app.js"></script>
+</body>
+</html>

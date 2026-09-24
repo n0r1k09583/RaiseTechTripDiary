@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>投稿を編集 — 課題提出</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-page="post-edit">
+  <main class="page" id="shell">
+    <section class="card">
+      <h1>投稿を編集</h1>
+      <p class="lead">自分の投稿だけ編集できます。新しい画像を選ぶと差し替わります。</p>
+      <form id="post-form">
+        <label for="body">本文</label>
+        <textarea id="body"></textarea>
+        <div class="counter" id="body-count">0 / 280</div>
+        <div class="field-error" id="body-error"></div>
+        <label for="image">画像を差し替え（任意）</label>
+        <input id="image" type="file" accept="image/jpeg,image/png,image/webp" />
+        <div class="row-actions">
+          <a class="btn ghost" href="timeline.html">キャンセル</a>
+          <button class="btn" type="submit">保存する</button>
+        </div>
+      </form>
+    </section>
+  </main>
+  <div class="modal-bg" id="modal-bg"><div class="modal"></div></div>
+  <script src="js/app.js"></script>
+</body>
+</html>

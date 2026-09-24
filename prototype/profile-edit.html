@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>プロフィール編集 — 課題提出</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-page="profile-edit">
+  <main class="page" id="shell">
+    <section class="card">
+      <h1>プロフィールを編集</h1>
+      <p class="lead">ユーザー名（@）は変更できません。表示名と自己紹介だけ直せます。</p>
+      <form id="profile-form">
+        <label for="displayName">表示名</label>
+        <input id="displayName" type="text" maxlength="20" />
+        <div class="counter" id="name-count">0 / 20</div>
+        <div class="field-error" id="name-error"></div>
+        <label for="bio">自己紹介</label>
+        <textarea id="bio"></textarea>
+        <div class="counter" id="bio-count">0 / 80</div>
+        <div class="row-actions">
+          <a class="btn ghost" href="profile.html">キャンセル</a>
+          <button class="btn" type="submit">保存する</button>
+        </div>
+      </form>
+    </section>
+  </main>
+  <div class="modal-bg" id="modal-bg"><div class="modal"></div></div>
+  <script src="js/app.js"></script>
+</body>
+</html>

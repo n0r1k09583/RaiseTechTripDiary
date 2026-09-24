@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ログイン — 課題提出</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-page="login">
+  <main class="page auth-page">
+    <p class="ink-mark" aria-hidden="true">課題提出</p>
+    <p class="brand"><a href="login.html">課題提出</a><span class="brand-sub">タイムライン</span></p>
+    <section class="card">
+      <h1>ログイン</h1>
+      <div class="demo">
+        試すアカウント（パスワードは password123）<br />
+        <button type="button" class="btn ghost" data-demo data-email="yamada@example.com">@yamada</button>
+        <button type="button" class="btn ghost" data-demo data-email="hanako@example.com">@hanako</button>
+        <button type="button" class="btn ghost" data-demo data-email="ichiro@example.com">@ichiro</button>
+      </div>
+      <form id="login-form">
+        <label for="email">メールアドレス</label>
+        <input id="email" type="email" autocomplete="username" />
+        <div class="field-error" id="email-error"></div>
+        <label for="password">パスワード</label>
+        <input id="password" type="password" autocomplete="current-password" />
+        <div class="field-error" id="password-error"></div>
+        <div class="row-actions">
+          <button class="btn" type="submit">ログイン</button>
+        </div>
+      </form>
+      <p class="hint">初めての人は <a href="signup.html">新規登録</a></p>
+    </section>
+  </main>
+  <div class="modal-bg" id="modal-bg"><div class="modal"></div></div>
+  <script src="js/app.js"></script>
+</body>
+</html>

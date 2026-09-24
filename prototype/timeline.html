@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>タイムライン — 課題提出</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-page="timeline">
+  <main class="page" id="shell">
+    <section class="card feed-card">
+      <div class="sheet-head">
+        <h1 class="brush-title">タイムライン</h1>
+        <p class="lead">いいね数とコメント数はカード上に出ます。<a href="post-new.html">投稿する</a></p>
+      </div>
+      <div class="tabs">
+        <a class="tab active" data-tab="all" href="timeline.html">すべて</a>
+        <a class="tab" data-tab="following" href="timeline.html?tab=following">フォロー中</a>
+      </div>
+      <div id="feed"></div>
+    </section>
+  </main>
+  <div class="modal-bg" id="modal-bg"><div class="modal"></div></div>
+  <script src="js/app.js"></script>
+</body>
+</html>

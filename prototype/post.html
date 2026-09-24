@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>投稿詳細 — 課題提出</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-page="post">
+  <main class="page" id="shell">
+    <p class="back-row"><a href="timeline.html">← タイムライン</a>
+      <button type="button" class="btn danger" id="delete-post" style="display:none;">削除</button></p>
+    <section class="card feed-card" id="detail"></section>
+    <section class="card">
+      <h1>コメント</h1>
+      <div id="comments"></div>
+      <form id="comment-form" style="margin-top:16px;">
+        <label for="comment-body">コメントを書く</label>
+        <textarea id="comment-body"></textarea>
+        <div class="counter" id="comment-count">0 / 140</div>
+        <div class="field-error" id="comment-error"></div>
+        <div class="row-actions"><button class="btn" type="submit">送信</button></div>
+      </form>
+    </section>
+  </main>
+  <div class="modal-bg" id="modal-bg"><div class="modal"></div></div>
+  <script src="js/app.js"></script>
+</body>
+</html>

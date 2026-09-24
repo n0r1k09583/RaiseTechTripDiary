@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>投稿する — 課題提出</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-page="post-new">
+  <main class="page" id="shell">
+    <section class="card">
+      <h1>投稿する</h1>
+      <p class="lead">本文は1〜280文字。画像は任意で1枚。</p>
+      <form id="post-form">
+        <label for="body">本文</label>
+        <textarea id="body" placeholder="いまどうしてる？"></textarea>
+        <div class="counter" id="body-count">0 / 280</div>
+        <div class="field-error" id="body-error"></div>
+        <label for="image">画像（任意）</label>
+        <input id="image" type="file" accept="image/jpeg,image/png,image/webp" />
+        <div class="hint">JPEG / PNG / WebP、5MBまで</div>
+        <div class="row-actions">
+          <a class="btn ghost" href="timeline.html">キャンセル</a>
+          <button class="btn" type="submit">投稿する</button>
+        </div>
+      </form>
+    </section>
+  </main>
+  <div class="modal-bg" id="modal-bg"><div class="modal"></div></div>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>要件定義書　RaiseTechタイムライン</title>
+  <style>
+    @page { size: A4; margin: 16mm 16mm 18mm; }
+    :root { --navy:#1a3354; --line:#c8c2b6; --bg:#f3eee4; --muted:#5a6270; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: #e8e0d2; color: #222;
+      font-family: "Times New Roman", "Yu Mincho", "YuMincho", "Hiragino Mincho ProN", serif;
+      line-height: 1.75;
+    }
+    .wrap { max-width: 210mm; margin: 20px auto; background: #fff; padding: 16mm 18mm 18mm; box-shadow: 0 8px 30px rgba(0,0,0,.12); }
+    h1 { font-size: 22pt; text-align: center; margin: 0; color: var(--navy); }
+    h2 { font-size: 14pt; color: var(--navy); border-bottom: 2px solid var(--navy); padding-bottom: 3px; margin: 1.8em 0 .7em; page-break-after: avoid; }
+    h3 { font-size: 12pt; color: var(--navy); margin: 1.3em 0 .4em; page-break-after: avoid; }
+    h4 { font-size: 11pt; margin: 1em 0 .3em; page-break-after: avoid; }
+    p, li { font-size: 10.5pt; }
+    p { margin: .45em 0; text-align: justify; }
+    ol.toc { padding-left: 1.4em; }
+    .cover { page-break-after: always; min-height: 252mm; display: flex; flex-direction: column; }
+    .school-head { text-align: center; letter-spacing: .3em; font-size: 11pt; color: var(--muted); margin-bottom: 8px; }
+    .cover-rule { height: 4px; background: var(--navy); margin: 12px 0 28px; }
+    .cover-rule.thin { height: 1px; background: #b8894a; margin: 0 0 28px; }
+    .sysname { text-align: center; font-size: 13pt; margin-top: 18px; }
+    .blank { border-bottom: 1px solid #333; display: inline-block; min-width: 12em; height: 1.2em; }
+    table { width: 100%; border-collapse: collapse; margin: 8px 0 14px; font-size: 10pt; }
+    th, td { border: 1px solid var(--line); padding: 6px 8px; vertical-align: top; }
+    th { background: var(--bg); text-align: center; font-weight: 700; }
+    td.c { text-align: center; white-space: nowrap; }
+    .caption { font-size: 9.5pt; text-align: center; margin: 4px 0 16px; color: var(--navy); }
+    .fig {
+      border: 1px solid var(--line); background: #fafafa; padding: 10px 12px; margin: 8px 0 4px;
+      page-break-inside: avoid; font-family: "Yu Gothic", "Meiryo", Consolas, monospace;
+      font-size: 9pt; white-space: pre; line-height: 1.45; overflow-x: auto;
+    }
+    .note { font-size: 9.5pt; color: var(--muted); }
+    .hint { max-width: 210mm; margin: 12px auto 0; text-align: center; font-family: "Yu Gothic", sans-serif; font-size: 12px; }
+    footer.f { margin-top: 22px; border-top: 1px solid var(--line); padding-top: 6px; font-size: 9pt; color: var(--muted); display: flex; justify-content: space-between; }
+    ul.chk { padding-left: 1.3em; }
+    @media print {
+      body { background: #fff; }
+      .hint { display: none; }
+      .wrap { margin: 0; box-shadow: none; max-width: none; padding: 0; }
+      .cover { min-height: auto; }
+      a { color: inherit; text-decoration: none; }
+      h2, table, .fig { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+<p class="hint">提出は PDF を使ってください。本ファイルをブラウザで開き、<b>Ctrl+P → PDFに保存</b> です。</p>
+<div class="wrap">
+
+<section class="cover">
+  <div>
+    <p class="school-head">課題提出用資料</p>
+    <div class="cover-rule"></div>
+    <p style="text-align:center;margin:0;letter-spacing:.4em;font-size:12pt;">システム開発課題　中級編　SNSアプリ</p>
+    <h1 style="margin-top:28px;font-size:28pt;letter-spacing:.12em;">要　件　定　義　書</h1>
+    <div class="cover-rule thin"></div>
+    <p class="sysname">システム名称：<b>RaiseTechタイムライン</b></p>
+    <p style="text-align:center;font-size:11pt;color:var(--muted);">画面表示名：課題提出／タイムライン<br>X / Twitter 風のテキストベースSNS<br>機能定義・画面設計・ER図を含む</p>
+
+    <table style="margin-top:40px;">
+      <tr><th style="width:28%">科目名</th><td><span class="blank"></span>（例：システム開発演習）</td></tr>
+      <tr><th>学校名・学科</th><td><span class="blank"></span></td></tr>
+      <tr><th>学年・クラス</th><td><span class="blank"></span></td></tr>
+      <tr><th>学籍番号</th><td><span class="blank"></span></td></tr>
+      <tr><th>氏名</th><td>岡田　法子</td></tr>
+      <tr><th>提出日</th><td>2026年8月24日</td></tr>
+      <tr><th>文書番号／版</th><td>RTL-RD-001　第1.1版</td></tr>
+    </table>
+    <p class="note">※灰色の下線部に、学校・学科・学籍番号を記入して提出してください。PDFに直接書き込むか、印刷後に手書きでも構いません。</p>
+  </div>
+  <footer class="f"><span>RaiseTechタイムライン　要件定義書　RTL-RD-001　第1.1版</span><span>表紙</span></footer>
+</section>
+
+<section>
+  <h2>改訂履歴</h2>
+  <table>
+    <tr><th class="c" style="width:16%">版</th><th class="c" style="width:22%">日付</th><th>内容</th></tr>
+    <tr><td class="c">第1.0版</td><td class="c">2026年8月17日</td><td>初版。機能一覧（F-01〜F-07）、画面設計、ER図をまとめた</td></tr>
+    <tr><td class="c">第1.1版</td><td class="c">2026年8月24日</td><td>学校提出用に体裁を整えた。画面表示名を課題提出／タイムラインに合わせ、実装で用いる技術構成を追記した</td></tr>
+  </table>
+  <h2>目次</h2>
+  <ol class="toc">
+    <li>初級編の振り返りと本書の位置づけ</li>
+    <li>概要・背景・目的</li>
+    <li>対象ユーザー</li>
+    <li>機能要件（機能一覧）</li>
+    <li>非機能要件・技術構成</li>
+    <li>画面設計</li>
+    <li>ER図・データ項目</li>
+    <li>スコープ外</li>
+    <li>中級編で後から触れること</li>
+    <li>受け入れ基準</li>
+  </ol>
+  <footer class="f"><span>RaiseTechタイムライン　要件定義書</span><span>目次</span></footer>
+</section>
+
+<section>
+  <h2>1. 初級編の振り返りと本書の位置づけ</h2>
+  <p>初級編の最終課題では、ホテル・会社の受付向け<strong>お問い合わせアプリ</strong>を作った。受付担当と来客という役割が分かれ、到着・帰宅・通話が中心だった。</p>
+  <p>中級編では、利用者同士が同じ立場でやり取りする<strong>テキストベースのSNS</strong>に入る。本書はその要件定義である。機能一覧・画面設計・ER図を先に固め、そのあと開発に進む。</p>
+  <p>画面の入口はタイムラインだけとする。課題の表示名は<strong>課題提出</strong>、ログイン後の見出しも「課題提出」「タイムライン」とする。受付やタスク管理の画面は置かない。</p>
+  <footer class="f"><span>RaiseTechタイムライン　要件定義書</span><span>1</span></footer>
+</section>
+
+<section>
+  <h2>2. 概要・背景・目的</h2>
+  <h3>2.1 概要</h3>
+  <p>本課題の作品は<strong>テキストベースのSNS</strong>である。X（旧Twitter）のタイムラインのように、短い文章と任意の画像を投稿し、他のユーザーがコメントといいねを付けられる。システム名称は<strong>RaiseTechタイムライン</strong>。画面上の表示名は「課題提出」「タイムライン」とする。</p>
+  <h3>2.2 背景</h3>
+  <p>受講生や個人が学習用に使う。本物のXを真似しすぎず、学習に必要な核（ログイン、投稿の流れ、第三者の反応）だけを残す。一人用のメモアプリではなく、<strong>複数ユーザーが同時に使う</strong>前提で設計する。</p>
+  <h3>2.3 目的</h3>
+  <ul>
+    <li>複数の受講生（または個人）が、同じタイムラインで投稿を見られる</li>
+    <li>本文と画像で投稿できる</li>
+    <li>第三者がコメント・いいねでき、件数が一覧でも分かる</li>
+    <li>ユーザー名で検索でき、投稿・コメントのユーザー名からプロフィールへ進んでフォローできる</li>
+    <li>気になる人をフォローし、フォロー中の投稿だけも見られる</li>
+    <li>ログインした本人だけが投稿・コメント・いいね・フォローできる</li>
+  </ul>
+  <footer class="f"><span>RaiseTechタイムライン　要件定義書</span><span>2</span></footer>
+</section>
+
+<section>
+  <h2>3. 対象ユーザー</h2>
+  <table>
+    <tr><th>アクター</th><th>説明</th></tr>
+    <tr><td>未ログイン利用者</td><td>新規登録とログインだけできる</td></tr>
+    <tr><td>ログイン済み利用者<br>（受講生／個人）</td><td>投稿、コメント、いいね、フォロー、タイムライン閲覧</td></tr>
+    <tr><td>他の利用者（第三者）</td><td>同じ投稿にコメント・いいねする相手。フォローする／される相手</td></tr>
+  </table>
+  <p>管理者画面や運営ロールは今回作らない。全員が同じ権限の利用者である。</p>
+  <footer class="f"><span>RaiseTechタイムライン　要件定義書</span><span>3</span></footer>
+</section>
+
+<section>
+  <h2>4. 機能要件（機能一覧）</h2>
+  <p>今回作る機能は次の7つに絞る。ログインを成立させるため、新規登録とログアウトはログイン機能に含める。投稿そのものはタイムライン機能に含める。</p>
+  <table>
+    <tr><th class="c">ID</th><th>機能</th><th>内容</th></tr>
+    <tr><td class="c">F-01</td><td>ログイン</td><td>メールアドレスとパスワードで入る。未登録なら新規登録する。ログアウトできる</td></tr>
+    <tr><td class="c">F-02</td><td>タイムライン</td><td>「すべて」と「フォロー中」を切り替える。本文・投稿者・日時・いいね数・コメント数を出す</td></tr>
+    <tr><td class="c">F-03</td><td>コメント</td><td>投稿に対して第三者がコメントする。件数を見せる。コメントのユーザー名からプロフィールへ</td></tr>
+    <tr><td class="c">F-04</td><td>いいね</td><td>投稿に対して第三者がいいねする。同じ人は1投稿につき1回。件数を見せる</td></tr>
+    <tr><td class="c">F-05</td><td>画像投稿</td><td>投稿に画像を1枚添えられる。画像なしのテキスト投稿も可</td></tr>
+    <tr><td class="c">F-06</td><td>フォロー</td><td>他のユーザーをフォロー／解除する。フォロワー数・フォロー数を出す。自分はフォローできない</td></tr>
+    <tr><td class="c">F-07</td><td>ユーザー検索</td><td>ユーザー名で検索する。結果からプロフィールへ進み、フォローできる</td></tr>
+  </table>
+
+  <h3>4.1 F-01 ログイン</h3>
+  <p>複数ユーザーを区別し、誰が投稿・コメント・いいねしたかを残す。ユーザー名（3〜20文字、半角英小文字・数字・_、一意）、表示名（1〜20文字）、メールアドレス、パスワード（8文字以上）で新規登録する。パスワードはハッシュして保存し、平文では残さない。未ログインでタイムライン等を開いたらログイン画面へ戻す。ログイン成功後はタイムラインを出す。</p>
+
+  <h3>4.2 F-02 タイムライン</h3>
+  <p>一覧は2種類ある。<strong>すべて</strong>は全ユーザーの投稿、<strong>フォロー中</strong>はフォローした人と自分の投稿。新しい投稿が上。一覧には投稿者名、本文、画像サムネイル、日時に加え、<strong>いいね数</strong>と<strong>コメント数</strong>を必ず出す。詳細を開かなくても、第三者の反応が分かるようにする。フォローゼロでも「すべて」は空にならない。</p>
+  <p>投稿は作成・編集・削除ができる（自分の投稿だけ）。続きは「もっと見る」ボタンではなく、<strong>無限スクロール</strong>で古い投稿を足す。自分が投稿・編集・削除した内容は押した直後に一覧へ出す。他人の作成・編集・削除は一件ずつ通知せず、約30秒おき（またはタブに戻ったとき）に静かに取り直す。</p>
+
+  <h3>4.3 F-03 コメント</h3>
+  <p>ログイン済みなら、自分の投稿にも他人の投稿にもコメントできる（1〜140文字）。コメントした人のユーザー名と日時を出す。<strong>ユーザー名を押すとプロフィールへ進み、そこでフォローできる</strong>。空コメントは不可。件数は comments テーブルの投稿ごとの行数とし、タイムライン上でも「コメント n件」と出す。0件のときも隠さない。</p>
+
+  <h3>4.4 F-04 いいね</h3>
+  <p>ハートを押すと付き、もう一度押すと取り消す（トグル）。1ユーザー×1投稿につき最大1件とし、データベースの一意制約で重複を防ぐ。自分の投稿にもいいねできる。いいねした人の一覧は今回出さず、件数と自分の押済み状態だけでよい。</p>
+
+  <h3>4.5 F-05 画像投稿</h3>
+  <p>画像は任意。1投稿につき最大1枚。JPEG / PNG / WebP、5MBまで。ファイル実体は uploads 等に置き、データベースにはパスだけ持つ。非対応形式やサイズ超過は投稿せず、理由を出す。</p>
+
+  <h3>4.6 F-06 フォロー</h3>
+  <p>他人のプロフィールからフォロー／解除する。自分自身はフォローできない。片方向でよく、相互フォローは2行になる。1ユーザー×1相手につき最大1件とし、一意制約で重複を防ぐ。プロフィールへ進む入口は、(1) タイムラインの投稿者ユーザー名、(2) コメントのユーザー名、(3) ユーザー検索の結果、(4) フォロー／フォロワー一覧。いずれもプロフィールでフォローできる。</p>
+
+  <h3>4.7 F-07 ユーザー検索</h3>
+  <p>ヘッダーの検索欄にユーザー名の一部または全部を入れる。部分一致（大文字小文字は区別しない）。結果のユーザー名を押すとプロフィールへ進み、フォローできる。ハッシュタグ検索は作らない。</p>
+  <footer class="f"><span>RaiseTechタイムライン　要件定義書</span><span>4</span></footer>
+</section>
+
+<section>
+  <h2>5. 非機能要件・技術構成</h2>
+  <h3>5.1 非機能要件</h3>
+  <ul>
+    <li>パスワードは保存時にハッシュする。平文で残さない</li>
+    <li>未ログインでは投稿・コメント・いいね・フォローできない（認可）</li>
+    <li>他人の投稿は編集・削除できない</li>
+    <li>タイムラインのいいね数・コメント数は、投稿件数分の追加クエリ（N+1）を避ける</li>
+    <li>フォロー中タイムラインは、フォロー先を1件ずつ問い合わせない</li>
+    <li>画像は JPEG / PNG / WebP、1枚あたり 5MB まで</li>
+    <li>学習用。インターネットへの常時公開はしない。AWS は無料枠の範囲で後から触れる</li>
+  </ul>
+  <h3>5.2 技術構成</h3>
+  <p>画面は React と Vite で作り、API は Spring Boot で受ける。データは SQLite に保存する。認証は JWT（アクセス＋リフレッシュ）とする。</p>
+  <table>
+    <tr><th>層</th><th>技術</th><th>備考</th></tr>
+    <tr><td>画面</td><td>React 19.2.8 / Vite 6.4.3 / TypeScript 5.7.3</td><td>ポート 5173</td></tr>
+    <tr><td>API</td><td>Spring Boot / MyBatis / Flyway / JWT</td><td>ポート 8080。jOOQ は使わない</td></tr>
+    <tr><td>保存</td><td>SQLite</td><td>学習用のローカル保存</td></tr>
+    <tr><td>認証</td><td>アクセストークン（15分）＋リフレッシュトークン（7日、DB保存）</td><td>ログアウトで破棄する</td></tr>
+    <tr><td>確認用プロトタイプ</td><td>HTML（結合プロトタイプ）</td><td>ポート 5178。7機能の動きを先に見せる</td></tr>
+  </table>
+  <p class="note">確認用URL（提出者のPC上）: プロトタイプ http://127.0.0.1:5178/login.html ／ 本実装画面 http://localhost:5173</p>
+  <footer class="f"><span>RaiseTechタイムライン　要件定義書</span><span>5</span></footer>
+</section>
+
+<section>
+  <h2>6. 画面設計</h2>
+  <h3>6.1 画面一覧</h3>
+  <table>
+    <tr><th class="c">ID</th><th>画面名</th><th>パス（仮）</th><th>ログイン</th><th>役割</th></tr>
+    <tr><td class="c">S-01</td><td>ログイン</td><td>/login</td><td>不要</td><td>入室</td></tr>
+    <tr><td class="c">S-02</td><td>新規登録</td><td>/signup</td><td>不要</td><td>アカウント作成</td></tr>
+    <tr><td class="c">S-03</td><td>タイムライン</td><td>/</td><td>必要</td><td>投稿と一覧（すべて／フォロー中）</td></tr>
+    <tr><td class="c">S-04</td><td>投稿詳細</td><td>/posts/:id</td><td>必要</td><td>本文・画像・コメント。ユーザー名はプロフィールへ</td></tr>
+    <tr><td class="c">S-05</td><td>プロフィール</td><td>/users/:username</td><td>必要</td><td>その人の投稿、フォロー／解除、件数</td></tr>
+    <tr><td class="c">S-06</td><td>フォロー一覧</td><td>/users/:username/followees ほか</td><td>必要</td><td>フォロー中／フォロワーの名前</td></tr>
+    <tr><td class="c">S-07</td><td>ユーザー検索</td><td>/search?q=</td><td>必要</td><td>ユーザー名検索の結果</td></tr>
+  </table>
+  <p>未ログインで S-03〜S-07 を開いたら S-01 へ戻す。ログイン後のヘッダーは、左に「課題提出」「タイムライン」、中央にユーザー名検索、右に自分の表示名とログアウトを置く。投稿・コメントのユーザー名はどこでもプロフィールへ進み、そこでフォローできる。</p>
+
+  <h3>6.2 画面遷移</h3>
+  <div class="fig">ログイン ──→ タイムライン ←── 新規登録
+                │
+                ├──→ 投稿詳細 ──→ プロフィール ──→ フォロー一覧
+                ├──→ ユーザー検索 ──→ プロフィール
+                └──→ プロフィール
+
+タイムライン ──ログアウト──→ ログイン</div>
+  <p class="caption">図1　画面遷移</p>
+
+  <h3>6.3 S-01 ログイン</h3>
+  <div class="fig">+--------------------------------------+
+|              課題提出                |
+|             タイムライン             |
+|                                      |
+|   メールアドレス  [                ] |
+|   パスワード      [                ] |
+|                                      |
+|           [ ログイン ]               |
+|                                      |
+|   初めての人は 新規登録              |
++--------------------------------------+</div>
+  <p class="caption">図2　ログイン画面</p>
+  <p>失敗時は「メールアドレスまたはパスワードが違います」と出し、パスワード欄を空にする。</p>
+
+  <h3>6.4 S-02 新規登録</h3>
+  <div class="fig">+--------------------------------------+
+|              課題提出                |
+|             タイムライン             |
+|                                      |
+|   ユーザー名      [                ] |
+|   表示名          [                ] |
+|   メールアドレス  [                ] |
+|   パスワード      [                ] |
+|   パスワード確認  [                ] |
+|                                      |
+|           [ 登録する ]               |
+|                                      |
+|   すでにアカウントがある人は ログイン|
++--------------------------------------+</div>
+  <p class="caption">図3　新規登録画面</p>
+  <p>ユーザー名は3〜20文字（半角英小文字・数字・_）、表示名は1〜20文字、パスワードは8文字以上。メールの重複は不可。成功後はログイン状態でタイムラインへ進む。</p>
+
+  <h3>6.5 S-03 タイムライン（メイン）</h3>
+  <div class="fig">+--------------------------------------------------+
+| 課題提出 タイムライン     検索    山田 [ログアウト] |
++--------------------------------------------------+
+| いまどうしてる？                                 |
+| [本文 280文字まで                              ] |
+| [画像を選ぶ]  選択中: photo.jpg                   |
+|                         [ 投稿する ]             |
++--------------------------------------------------+
+| [ すべて ]  [ フォロー中 ]                       |
++--------------------------------------------------+
+| 佐藤 花子  2026-08-24 21:00                      |
+| 課題の要件定義、今日スタートした                 |
+| [画像サムネイル]                                 |
+| ♥ 3    コメント 2件                              |
++--------------------------------------------------+
+| 鈴木 一郎  2026-08-24 20:45                      |
+| タイムラインの件数、一覧で見えないと困る         |
+| ♥ 1    コメント 0件                              |
++--------------------------------------------------+</div>
+  <p class="caption">図4　タイムライン画面（タブ「すべて／フォロー中」。いいね数・コメント数をカード上に出す）</p>
+  <p>本文は1〜280文字。画像は任意。初期表示は「すべて」。カードの表示名を押すとプロフィール、コメント件数を押すと投稿詳細へ進む。第三者の反応がカード上で分かることを、この画面の合格条件にする。自分の投稿には編集と削除（確認のあと）を出す。続きは無限スクロール。他人の更新は約30秒おきに静かに取り直す。</p>
+
+  <h3>6.6 S-04 投稿詳細</h3>
+  <div class="fig">+--------------------------------------------------+
+| ← タイムライン                                   |
++--------------------------------------------------+
+| 佐藤 花子  2026-08-24 21:00                      |
+| 課題の要件定義、今日スタートした                 |
+| [画像 大きめ]                                    |
+| ♥ 3                                              |
++--------------------------------------------------+
+| コメント 2件                                     |
+| ----------------------------------------------   |
+| 山田 @yamada  21:05  画像も投稿できるようにした  |
+| 鈴木 @ichiro  21:10  件数、タイムラインにも出して|
++--------------------------------------------------+
+| [コメントを書く 140文字まで                    ] |
+|                         [ 送信 ]                 |
++--------------------------------------------------+</div>
+  <p class="caption">図5　投稿詳細画面</p>
+  <p>コメントのユーザー名を押すとプロフィールへ進み、そこでフォローできる。0件のときは「まだコメントはありません」と出し、件数は 0 と明示する。</p>
+
+  <h3>6.7 S-05 プロフィール</h3>
+  <div class="fig">+--------------------------------------------------+
+| ← タイムライン                                   |
+| 佐藤 花子                                        |
+| @hanako                                          |
+| フォロー 1    フォロワー 4                       |
+|                     [ フォロー ]                 |
++--------------------------------------------------+
+| （その人の投稿カード。いいね数・コメント数つき） |
++--------------------------------------------------+</div>
+  <p class="caption">図6　他人のプロフィール（フォロー済みならボタンは「フォロー中」）</p>
+  <p>フォロー n／フォロワー n を押すと一覧へ進む。自分のプロフィールにフォローボタンは出さない。</p>
+
+  <h3>6.8 S-06 フォロー一覧／フォロワー一覧</h3>
+  <p>1行はユーザー名と、自分から見たフォローボタン（自分の行はボタンなし）。0件のときは「まだいません」と出す。ユーザー検索（S-07）と並び、人を辿る入口になる。</p>
+
+  <h3>6.9 S-07 ユーザー検索</h3>
+  <p>ヘッダーにユーザー名を入れて検索する。部分一致（大文字小文字は区別しない）。結果のユーザー名を押すとプロフィールへ進み、フォローできる。0件なら「該当するユーザーはいません」。ハッシュタグ検索は無い。</p>
+
+  <h3>6.10 状態と見た目の約束</h3>
+  <table>
+    <tr><th>状態</th><th>見た目</th></tr>
+    <tr><td>未いいね</td><td>輪郭のハート + 件数</td></tr>
+    <tr><td>いいね済み</td><td>塗りつぶしハート + 件数</td></tr>
+    <tr><td>未フォロー</td><td>「フォロー」ボタン</td></tr>
+    <tr><td>フォロー中</td><td>「フォロー中」ボタン（押すと解除）</td></tr>
+    <tr><td>コメント 0件</td><td>「コメント 0件」と出す（隠さない）</td></tr>
+    <tr><td>画像なし投稿</td><td>本文と件数だけ。空き枠は出さない</td></tr>
+    <tr><td>送信中</td><td>ボタンを無効化して二重投稿を防ぐ</td></tr>
+  </table>
+  <p>見た目は和紙色の背景、墨色の文字、明朝／書道フォントとする。朱はいいねなどのアクセントだけ。角は四角、影は薄い墨のずらしとする。</p>
+  <footer class="f"><span>RaiseTechタイムライン　要件定義書</span><span>6</span></footer>
+</section>
+
+<section>
+  <h2>7. ER図・データ項目</h2>
+  <p>複数ユーザーが投稿し、第三者がコメント・いいね・フォローを付ける。件数は comments・likes・follows の行数で出す。テーブルに件数列は持たない（今回は都度集計）。</p>
+  <div class="fig">users 1 ─── * posts      （投稿する）
+users 1 ─── * comments   （コメントする）
+users 1 ─── * likes      （いいねする）
+users 1 ─── * follows    （フォローする／される）
+posts 1 ─── * comments   （コメントされる）
+posts 1 ─── * likes      （いいねされる）
+
+likes は UNIQUE (post_id, user_id)
+follows は UNIQUE (follower_id, followee_id)
+follows は follower_id ≠ followee_id（自分自身は不可）
+posts.image_path は NULL 可（画像なし投稿）</div>
+  <p class="caption">図7　エンティティ関連</p>
+
+  <h3>7.1 users（利用者）</h3>
+  <table>
+    <tr><th>列</th><th>型</th><th>制約</th><th>説明</th></tr>
+    <tr><td>id</td><td>INTEGER</td><td>PK</td><td>利用者ID</td></tr>
+    <tr><td>email</td><td>VARCHAR(255)</td><td>UNIQUE, NOT NULL</td><td>ログイン用</td></tr>
+    <tr><td>username</td><td>VARCHAR(20)</td><td>UNIQUE, NOT NULL</td><td>検索・プロフィールURL。半角英小文字・数字・_</td></tr>
+    <tr><td>display_name</td><td>VARCHAR(20)</td><td>NOT NULL</td><td>タイムラインに出す名前</td></tr>
+    <tr><td>password_digest</td><td>VARCHAR(255)</td><td>NOT NULL</td><td>ハッシュ済み。平文は持たない</td></tr>
+    <tr><td>created_at</td><td>DATETIME</td><td>NOT NULL</td><td>登録日時</td></tr>
+    <tr><td>updated_at</td><td>DATETIME</td><td>NOT NULL</td><td>更新日時</td></tr>
+  </table>
+
+  <h3>7.2 posts（投稿）</h3>
+  <table>
+    <tr><th>列</th><th>型</th><th>制約</th><th>説明</th></tr>
+    <tr><td>id</td><td>INTEGER</td><td>PK</td><td>投稿ID</td></tr>
+    <tr><td>user_id</td><td>INTEGER</td><td>FK → users.id, NOT NULL</td><td>投稿者</td></tr>
+    <tr><td>body</td><td>VARCHAR(280)</td><td>NOT NULL</td><td>本文</td></tr>
+    <tr><td>image_path</td><td>VARCHAR(512)</td><td>NULL可</td><td>画像パス。無ければ NULL</td></tr>
+    <tr><td>created_at</td><td>DATETIME</td><td>NOT NULL</td><td>投稿日時（並び順）</td></tr>
+    <tr><td>updated_at</td><td>DATETIME</td><td>NOT NULL</td><td>更新日時</td></tr>
+  </table>
+
+  <h3>7.3 comments（コメント）</h3>
+  <table>
+    <tr><th>列</th><th>型</th><th>制約</th><th>説明</th></tr>
+    <tr><td>id</td><td>INTEGER</td><td>PK</td><td>コメントID</td></tr>
+    <tr><td>post_id</td><td>INTEGER</td><td>FK → posts.id, NOT NULL</td><td>対象の投稿</td></tr>
+    <tr><td>user_id</td><td>INTEGER</td><td>FK → users.id, NOT NULL</td><td>コメントした人</td></tr>
+    <tr><td>body</td><td>VARCHAR(140)</td><td>NOT NULL</td><td>コメント本文</td></tr>
+    <tr><td>created_at</td><td>DATETIME</td><td>NOT NULL</td><td>投稿日時</td></tr>
+  </table>
+  <p>投稿削除時はコメントも消す（ON DELETE CASCADE）。</p>
+
+  <h3>7.4 likes（いいね）</h3>
+  <table>
+    <tr><th>列</th><th>型</th><th>制約</th><th>説明</th></tr>
+    <tr><td>id</td><td>INTEGER</td><td>PK</td><td>いいねID</td></tr>
+    <tr><td>post_id</td><td>INTEGER</td><td>FK → posts.id, NOT NULL</td><td>対象の投稿</td></tr>
+    <tr><td>user_id</td><td>INTEGER</td><td>FK → users.id, NOT NULL</td><td>いいねした人</td></tr>
+    <tr><td>created_at</td><td>DATETIME</td><td>NOT NULL</td><td>いいねした日時</td></tr>
+  </table>
+  <p>一意制約 UNIQUE (post_id, user_id)。取り消しは行削除。投稿削除時は CASCADE。</p>
+
+  <h3>7.5 follows（フォロー）</h3>
+  <table>
+    <tr><th>列</th><th>型</th><th>制約</th><th>説明</th></tr>
+    <tr><td>id</td><td>INTEGER</td><td>PK</td><td>フォローID</td></tr>
+    <tr><td>follower_id</td><td>INTEGER</td><td>FK → users.id, NOT NULL</td><td>フォローした人</td></tr>
+    <tr><td>followee_id</td><td>INTEGER</td><td>FK → users.id, NOT NULL</td><td>フォローされた人</td></tr>
+    <tr><td>created_at</td><td>DATETIME</td><td>NOT NULL</td><td>フォローした日時</td></tr>
+  </table>
+  <p>一意制約 UNIQUE (follower_id, followee_id)。自分自身は不可。解除は行削除。片方向でよく、相互は2行。</p>
+
+  <h3>7.6 画面用の派生項目（テーブルには持たない）</h3>
+  <table>
+    <tr><th>名前</th><th>出し方</th><th>使う画面</th></tr>
+    <tr><td>comment_count</td><td>COUNT(comments.id) GROUP BY post_id</td><td>タイムライン、詳細、プロフィール</td></tr>
+    <tr><td>like_count</td><td>COUNT(likes.id) GROUP BY post_id</td><td>同上</td></tr>
+    <tr><td>liked_by_me</td><td>現在ユーザーの likes 行があるか</td><td>ハートの塗りつぶし</td></tr>
+    <tr><td>following_count</td><td>COUNT WHERE follower_id = その人</td><td>プロフィール「フォロー n」</td></tr>
+    <tr><td>follower_count</td><td>COUNT WHERE followee_id = その人</td><td>プロフィール「フォロワー n」</td></tr>
+    <tr><td>followed_by_me</td><td>現在ユーザー→その人の follows 行があるか</td><td>フォローボタン</td></tr>
+  </table>
+  <p>投稿一覧では JOIN またはサブクエリで件数をまとめて取り、N+1 を避ける。「フォロー中」はフォロー先を1回のクエリで取る。</p>
+  <footer class="f"><span>RaiseTechタイムライン　要件定義書</span><span>7</span></footer>
+</section>
+
+<section>
+  <h2>8. スコープ外（今回作らない）</h2>
+  <ul>
+    <li>ハッシュタグ検索</li>
+    <li>リポスト、引用、ブックマーク</li>
+    <li>ダイレクトメッセージ</li>
+    <li>動画・複数枚画像・GIF</li>
+    <li>管理者画面、通報、BAN</li>
+    <li>パスワード再設定メール</li>
+    <li>アプリの本番公開（常時稼働のURL）</li>
+    <li>WebSocket で投稿の作成・編集・削除を一件ごとに全員へ通知すること（人数が増えると通知が増え、使いづらくなる）</li>
+  </ul>
+  <p>人を見つける入口は、ヘッダーのユーザー名検索と、投稿・コメントのユーザー名クリック。フォローしていない人の投稿も「すべて」で見られるので、受講生同士の確認は空にならない。</p>
+  <footer class="f"><span>RaiseTechタイムライン　要件定義書</span><span>8</span></footer>
+</section>
+
+<section>
+  <h2>9. 中級編で後から触れること</h2>
+  <p>実装に入ってから、次を学習トピックとして扱う。要件の核（F-01〜F-07）は変えず、品質と運用の話として足す。</p>
+  <table>
+    <tr><th>トピック</th><th>このアプリでの意味</th></tr>
+    <tr><td>認証・認可</td><td>ログイン状態の確認。他人の投稿削除は不可</td></tr>
+    <tr><td>N+1問題</td><td>投稿一覧でいいね数・コメント数をまとめて取る</td></tr>
+    <tr><td>テスト</td><td>ログイン、投稿、いいね・フォローの重複防止などを自動で確認</td></tr>
+    <tr><td>ログ</td><td>ログイン失敗や投稿エラーを残す</td></tr>
+    <tr><td>CI/CD</td><td>テストが通ったら取り込む</td></tr>
+    <tr><td>AWS（無料枠）</td><td>作りっぱなしにしない。課金リソースは置かない</td></tr>
+  </table>
+  <footer class="f"><span>RaiseTechタイムライン　要件定義書</span><span>9</span></footer>
+</section>
+
+<section>
+  <h2>10. 受け入れ基準</h2>
+  <ul class="chk">
+    <li>複数ユーザーがそれぞれ登録・ログインできる</li>
+    <li>ログイン成功後はタイムラインが出る</li>
+    <li>ログインした人がテキスト投稿できる</li>
+    <li>投稿に画像を1枚付けられる（付けなくても投稿できる）</li>
+    <li>自分の投稿は編集・削除できる。他人の投稿はできない</li>
+    <li>タイムラインの「すべて」に全ユーザーの投稿が新しい順で出る</li>
+    <li>投稿に成功したら、タイムライン先頭にすぐ出る（再読み込みボタンは不要）</li>
+    <li>古い投稿は「もっと見る」ボタンではなく、下スクロール（無限スクロール）で続く</li>
+    <li>他のユーザーをフォロー／解除でき、自分はフォローできない</li>
+    <li>「フォロー中」には、フォローした人と自分の投稿だけが出る</li>
+    <li>プロフィールにフォロー数・フォロワー数が分かる</li>
+    <li>第三者がコメントでき、件数がタイムライン上で分かる</li>
+    <li>第三者がいいねでき、件数がタイムライン上で分かる</li>
+    <li>同じユーザーが同じ投稿にいいねを重複して付けられない</li>
+    <li>ユーザー名で検索でき、結果からプロフィールへ進める</li>
+    <li>投稿およびコメントのユーザー名をクリックするとプロフィールが開き、フォローできる</li>
+    <li>未ログインでは投稿・コメント・いいね・フォローできない</li>
+  </ul>
+  <h3>10.1 複数人で試す流れ</h3>
+  <ol>
+    <li>Aさんが登録してテキスト投稿する</li>
+    <li>Bさんが別アカウントで登録し、同じタイムラインにAの投稿が見える</li>
+    <li>Bさんがいいねする → Aの画面でも件数が増える</li>
+    <li>Cさんがコメントする → タイムラインの「コメント n件」が増える</li>
+    <li>Aさんが画像つきで再投稿する → B・Cのタイムライン「すべて」先頭に画像が出る</li>
+    <li>BさんがAさんをフォローする → Bの「フォロー中」にAの投稿が出る。Aのフォロワー数が1増える</li>
+    <li>Bさんがフォローを外す → 「フォロー中」からAの投稿が消え、「すべて」には残る</li>
+    <li>Cさんがヘッダーでユーザー名検索し、コメントのユーザー名からも同じプロフィールへ進めてフォローできる</li>
+  </ol>
+  <p class="note">確認用のデモユーザー例: 山田（@yamada）、佐藤（@hanako）、鈴木（@ichiro）。パスワードは password123。</p>
+  <footer class="f"><span>RaiseTechタイムライン　要件定義書　RTL-RD-001　第1.1版</span><span>10</span></footer>
+</section>
+
+</div>
+</body>
+</html>

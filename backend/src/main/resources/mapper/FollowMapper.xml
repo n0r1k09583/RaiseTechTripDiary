@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.raisetech.tripdiary.mapper.FollowMapper">
+
+  <sql id="followedByMe">
+    (SELECT COUNT(*) FROM follows mine
+     WHERE mine.follower_id = #{viewerId} AND mine.followee_id = u.id) AS followed_by_me
+  </sql>
+
+  <select id="find" resultType="Follow">
+    SELECT id, follower_id, followee_id, created_at
+    FROM follows
+    WHERE follower_id = #{followerId} AND followee_id = #{followeeId}
+  </select>
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO follows (follower_id, followee_id, created_at)
+    VALUES (
+      #{followerId},
+      #{followeeId},
+      COALESCE(#{createdAt}, CAST(CURRENT_TIMESTAMP AS VARCHAR))
+    )
+  </insert>
+
+  <delete id="delete">
+    DELETE FROM follows WHERE follower_id = #{followerId} AND followee_id = #{followeeId}
+  </delete>
+
+  <select id="count" resultType="int">
+    SELECT COUNT(*) FROM follows
+  </select>
+
+  <select id="listFollowees" resultType="UserSummary">
+    SELECT u.id, u.username, u.display_name,
+           <include refid="followedByMe"/>
+    FROM follows f
+    JOIN users u ON u.id = f.followee_id
+    WHERE f.follower_id = #{userId}
+    ORDER BY u.username ASC
+  </select>
+
+  <select id="listFollowers" resultType="UserSummary">
+    SELECT u.id, u.username, u.display_name,
+           <include refid="followedByMe"/>
+    FROM follows f
+    JOIN users u ON u.id = f.follower_id
+    WHERE f.followee_id = #{userId}
+    ORDER BY u.username ASC
+  </select>
+</mapper>

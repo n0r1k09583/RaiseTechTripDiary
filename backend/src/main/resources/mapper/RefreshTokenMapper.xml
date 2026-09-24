@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.raisetech.tripdiary.mapper.RefreshTokenMapper">
+
+  <sql id="selectRefreshToken">
+    SELECT id, user_id, token_hash, expires_at, created_at
+    FROM refresh_tokens
+  </sql>
+
+  <select id="findValidByHash" resultType="RefreshToken">
+    <include refid="selectRefreshToken"/>
+    WHERE token_hash = #{tokenHash} AND expires_at &gt; #{now}
+  </select>
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO refresh_tokens (user_id, token_hash, expires_at, created_at)
+    VALUES (#{userId}, #{tokenHash}, #{expiresAt}, #{createdAt})
+  </insert>
+
+  <delete id="deleteById">
+    DELETE FROM refresh_tokens WHERE id = #{id}
+  </delete>
+
+  <delete id="deleteByHash">
+    DELETE FROM refresh_tokens WHERE token_hash = #{tokenHash}
+  </delete>
+</mapper>

@@ -1,0 +1,72 @@
+server:
+  port: ${PORT:8080}
+  address: 127.0.0.1
+  tomcat:
+    basedir: .
+    accesslog:
+      enabled: true
+      directory: logs
+      prefix: access
+      suffix: .log
+      pattern: '%h %l %u %t "%r" %s %b %D'
+  error:
+    include-message: never
+    include-stacktrace: never
+    include-binding-errors: never
+
+spring:
+  mvc:
+    throw-exception-if-no-handler-found: true
+  datasource:
+    url: jdbc:sqlite:${DB_PATH:./data/tripdiary.db}
+    driver-class-name: org.sqlite.JDBC
+    hikari:
+      maximum-pool-size: 1
+  sql:
+    init:
+      mode: never
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.raisetech.tripdiary.domain
+  configuration:
+    map-underscore-to-camel-case: true
+
+jwt:
+  secret: ${JWT_SECRET:dev-only-change-me-for-class}
+  access-expiration-ms: ${JWT_ACCESS_EXPIRATION_MS:900000}
+  refresh-expiration-ms: ${JWT_REFRESH_EXPIRATION_MS:604800000}
+
+cors:
+  origins: http://localhost:5173,http://127.0.0.1:5173
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+
+app:
+  upload-dir: ${UPLOAD_DIR:./uploads}
+  storage: ${APP_STORAGE:local}
+  image-bucket: ${IMAGE_BUCKET:}
+
+# 課題は backend/logs のファイル確認。Datadog などは入れない。
+# application.log / error.log は JSON（構造化）。DEBUG は調査するときだけ上げる。
+# パスワード・トークン・リクエスト本文はログに出さない。
+logging:
+  file:
+    path: logs
+  level:
+    root: INFO
+    com.raisetech.tripdiary: INFO

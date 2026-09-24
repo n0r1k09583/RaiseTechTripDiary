@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>新規登録 — 課題提出</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-page="signup">
+  <main class="page auth-page">
+    <p class="ink-mark" aria-hidden="true">課題提出</p>
+    <p class="brand"><a href="login.html">課題提出</a><span class="brand-sub">タイムライン</span></p>
+    <section class="card">
+      <h1>新規登録</h1>
+      <form id="signup-form">
+        <label for="username">ユーザー名</label>
+        <input id="username" type="text" placeholder="yamada_1" />
+        <div class="hint">3〜20文字。半角英小文字・数字・_</div>
+        <div class="field-error" id="username-error"></div>
+        <label for="displayName">表示名</label>
+        <input id="displayName" type="text" maxlength="20" />
+        <div class="counter" id="name-count">0 / 20</div>
+        <div class="field-error" id="name-error"></div>
+        <label for="email">メールアドレス</label>
+        <input id="email" type="email" />
+        <div class="field-error" id="email-error"></div>
+        <label for="password">パスワード</label>
+        <input id="password" type="password" />
+        <div class="field-error" id="password-error"></div>
+        <label for="confirm">パスワード確認</label>
+        <input id="confirm" type="password" />
+        <div class="field-error" id="confirm-error"></div>
+        <div class="row-actions"><button class="btn" type="submit">登録する</button></div>
+      </form>
+      <p class="hint">すでにアカウントがある人は <a href="login.html">ログイン</a></p>
+    </section>
+  </main>
+  <div class="modal-bg" id="modal-bg"><div class="modal"></div></div>
+  <script src="js/app.js"></script>
+</body>
+</html>

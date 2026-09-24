@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.raisetech.tripdiary.mapper.PostMapper">
+
+  <sql id="postColumns">
+    p.id, p.user_id, p.spot_name, p.area_tag, p.visit_status, p.body, p.image_path,
+    p.created_at, p.updated_at,
+    u.username, u.display_name,
+    (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS comment_count,
+    (SELECT COUNT(*) FROM likes l WHERE l.post_id = p.id) AS like_count
+  </sql>
+
+  <sql id="selectPost">
+    SELECT <include refid="postColumns"/>,
+           (SELECT COUNT(*) FROM likes liked
+            WHERE liked.post_id = p.id AND liked.user_id = #{viewerId}) AS liked_by_me
+    FROM posts p
+    JOIN users u ON u.id = p.user_id
+  </sql>
+
+  <sql id="pageOlder">
+    <if test="beforeCreatedAt != null">
+      AND (p.created_at &lt; #{beforeCreatedAt}
+        OR (p.created_at = #{beforeCreatedAt} AND p.id &lt; #{beforeId}))
+    </if>
+  </sql>
+
+  <sql id="pageNewer">
+    <if test="afterCreatedAt != null">
+      AND (p.created_at &gt; #{afterCreatedAt}
+        OR (p.created_at = #{afterCreatedAt} AND p.id &gt; #{afterId}))
+    </if>
+  </sql>
+
+  <sql id="tabFilter">
+    <if test="tab == 'following'">
+      AND (p.user_id = #{viewerId}
+        OR p.user_id IN (SELECT followee_id FROM follows WHERE follower_id = #{viewerId}))
+    </if>
+    <if test="tab == 'visited'">
+      AND p.user_id = #{viewerId} AND p.visit_status = 'visited'
+    </if>
+    <if test="tab == 'want'">
+      AND EXISTS (
+        SELECT 1 FROM likes liked
+        WHERE liked.post_id = p.id AND liked.user_id = #{viewerId}
+      )
+    </if>
+    <if test="tab == 'photos'">
+      AND p.image_path IS NOT NULL AND p.image_path != ''
+    </if>
+  </sql>
+
+  <sql id="areaFilter">
+    <if test="area != null and area != ''">
+      AND p.area_tag = #{area}
+    </if>
+  </sql>
+
+  <select id="findById" resultType="Post">
+    SELECT <include refid="postColumns"/>,
+           0 AS liked_by_me
+    FROM posts p
+    JOIN users u ON u.id = p.user_id
+    WHERE p.id = #{id}
+  </select>
+
+  <select id="findForViewer" resultType="Post">
+    <include refid="selectPost"/>
+    WHERE p.id = #{id}
+  </select>
+
+  <select id="list" resultType="Post">
+    <include refid="selectPost"/>
+    WHERE 1 = 1
+    <include refid="tabFilter"/>
+    <include refid="areaFilter"/>
+    <include refid="pageOlder"/>
+    <include refid="pageNewer"/>
+    ORDER BY p.created_at DESC, p.id DESC
+    LIMIT #{limit}
+  </select>
+
+  <select id="listByAuthor" resultType="Post">
+    <include refid="selectPost"/>
+    WHERE p.user_id = #{authorId}
+    <include refid="pageOlder"/>
+    <include refid="pageNewer"/>
+    ORDER BY p.created_at DESC, p.id DESC
+    LIMIT #{limit}
+  </select>
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO posts (user_id, spot_name, area_tag, visit_status, body, image_path, created_at, updated_at)
+    VALUES (
+      #{userId},
+      COALESCE(#{spotName}, '未設定'),
+      COALESCE(#{areaTag}, '関東'),
+      COALESCE(#{visitStatus}, 'visited'),
+      #{body},
+      #{imagePath},
+      COALESCE(#{createdAt}, CAST(CURRENT_TIMESTAMP AS VARCHAR)),
+      COALESCE(#{createdAt}, CAST(CURRENT_TIMESTAMP AS VARCHAR))
+    )
+  </insert>
+
+  <update id="update">
+    UPDATE posts
+    SET spot_name = #{spotName},
+        area_tag = #{areaTag},
+        visit_status = #{visitStatus},
+        body = #{body},
+        image_path = #{imagePath},
+        updated_at = CAST(CURRENT_TIMESTAMP AS VARCHAR)
+    WHERE id = #{id}
+  </update>
+
+  <delete id="deleteById">
+    DELETE FROM posts WHERE id = #{id}
+  </delete>
+
+  <select id="count" resultType="int">
+    SELECT COUNT(*) FROM posts
+  </select>
+
+  <update id="setImagePathIfBlank">
+    UPDATE posts
+    SET image_path = #{imagePath}
+    WHERE spot_name = #{spotName}
+      AND (image_path IS NULL OR image_path = '')
+  </update>
+</mapper>

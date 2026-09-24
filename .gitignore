@@ -1,0 +1,31 @@
+# 実行時データ（実装後）
+node_modules/
+.env
+.env.local
+uploads/
+*.db
+backend/data/
+backend/target/
+backend/logs/
+logs/
+frontend/dist/
+frontend/e2e/
+infra/terraform/.terraform/
+infra/terraform/*.tfstate
+infra/terraform/*.tfstate.*
+infra/terraform/*.tfvars
+perf/results/
+uploads-perf/
+data/tripdiary-perf.db
+data/tripdiary-perf.db-wal
+data/tripdiary-perf.db-shm
+backend/data/tripdiary-perf.db
+backend/data/tripdiary-perf.db-wal
+backend/data/tripdiary-perf.db-shm
+
+
+
+# OS / エディタ
+.DS_Store
+Thumbs.db
+.idea/

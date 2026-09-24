@@ -1,0 +1,293 @@
+@import url("https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Yuji+Syuku&display=swap");
+
+:root {
+  --ink: #1a1612;
+  --ink-soft: #3a342c;
+  --muted: #7a7166;
+  --washi: #efe4cc;
+  --paper: #fbf6ea;
+  --line: #d2c4a8;
+  --seal: #b3392b;
+  --danger: #b3392b;
+  --ok: #2f5d3a;
+  --text: var(--ink);
+  font-family: "Shippori Mincho", "Yu Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  font-size: 16px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  color: var(--ink);
+  background-color: var(--washi);
+  background-image:
+    radial-gradient(ellipse at 12% -10%, rgba(26, 22, 18, 0.07), transparent 46%),
+    radial-gradient(ellipse at 110% 8%, rgba(179, 57, 43, 0.05), transparent 42%),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(90, 72, 48, 0.035) 3px,
+      rgba(90, 72, 48, 0.035) 4px
+    );
+}
+
+a { color: var(--ink); }
+button, input, textarea { font: inherit; }
+
+.page { max-width: 640px; margin: 0 auto; padding: 0 16px 56px; }
+.auth-page {
+  position: relative;
+  max-width: 400px;
+  padding-top: 64px;
+}
+
+.ink-mark {
+  position: absolute;
+  left: -3.6rem;
+  top: 72px;
+  writing-mode: vertical-rl;
+  font-family: "Yuji Syuku", "Shippori Mincho", serif;
+  font-size: 28px;
+  letter-spacing: 0.42em;
+  color: var(--ink);
+}
+@media (max-width: 640px) {
+  .ink-mark { display: none; }
+}
+
+.brand {
+  font-family: "Yuji Syuku", "Shippori Mincho", serif;
+  font-size: 15px;
+  letter-spacing: 0.42em;
+  color: var(--ink);
+  margin: 0 0 28px;
+}
+.brand a { text-decoration: none; }
+.brand-sub {
+  display: block;
+  margin-top: 10px;
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  color: var(--ink);
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(251, 246, 234, 0.94);
+  border-bottom: 2px solid var(--ink);
+  margin: 0 -16px 18px;
+  padding: 12px 16px 10px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+.topbar .brand { margin: 0; font-size: 13px; }
+.topbar .brand-sub { margin-top: 2px; font-size: 18px; letter-spacing: 0.2em; }
+.topbar .search { justify-self: center; width: min(280px, 100%); }
+.topbar .right { justify-self: end; display: flex; gap: 8px; align-items: center; white-space: nowrap; }
+
+.card {
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  padding: 20px 18px;
+  margin-bottom: 16px;
+  box-shadow: 4px 4px 0 rgba(26, 22, 18, 0.08);
+}
+.card.feed-card { padding: 0; overflow: hidden; }
+.sheet-head { padding: 22px 20px 8px; }
+.sheet-pad { padding: 16px 20px 8px; }
+
+h1, .brush-title {
+  font-family: "Yuji Syuku", "Shippori Mincho", serif;
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  margin: 0 0 10px;
+}
+.lead { color: var(--muted); margin: 0 0 16px; font-size: 13px; letter-spacing: 0.04em; }
+
+label {
+  display: block;
+  font-size: 13px;
+  margin: 14px 0 6px;
+  letter-spacing: 0.12em;
+}
+input[type="text"], input[type="email"], input[type="password"], textarea, input[type="file"] {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--ink);
+  border-radius: 0;
+  padding: 8px 2px;
+  background: transparent;
+  color: var(--ink);
+}
+textarea {
+  min-height: 120px;
+  resize: vertical;
+  border: 1px solid var(--line);
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.35);
+}
+input[type="file"] {
+  border: 1px dashed var(--line);
+  padding: 8px;
+}
+.field-error { color: var(--danger); font-size: 12px; min-height: 1.2em; margin-top: 4px; }
+.hint { color: var(--muted); font-size: 13px; }
+
+.btn {
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  padding: 8px 18px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  cursor: pointer;
+  background: var(--ink);
+  color: var(--paper);
+  text-decoration: none;
+  display: inline-block;
+  white-space: nowrap;
+}
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn.ghost { background: transparent; color: var(--ink); }
+.btn.danger { background: var(--seal); border-color: var(--seal); color: #fff8f0; }
+.btn.follow { background: var(--ink); }
+.btn.following { background: transparent; color: var(--ink); }
+.row-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; flex-wrap: wrap; }
+
+.tabs { display: flex; border-bottom: 1px solid var(--ink); margin-bottom: 0; }
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 12px;
+  color: var(--muted);
+  border: 0;
+  background: none;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  text-decoration: none;
+  letter-spacing: 0.18em;
+}
+.tab.active {
+  color: var(--ink);
+  border-bottom-color: var(--seal);
+}
+
+.post {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--line);
+  border-left: 3px solid transparent;
+}
+.post:hover { border-left-color: var(--ink); background: rgba(26, 22, 18, 0.03); }
+.post:last-child { border-bottom: 0; }
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 0;
+  background: var(--ink);
+  color: var(--paper);
+  display: grid;
+  place-items: center;
+  font-family: "Yuji Syuku", "Shippori Mincho", serif;
+  font-size: 16px;
+  letter-spacing: 0;
+}
+.meta { color: var(--muted); font-size: 13px; }
+.name { font-weight: 700; color: var(--ink); margin-right: 6px; text-decoration: none; }
+.handle { color: var(--muted); text-decoration: none; }
+.body { margin: 8px 0; white-space: pre-wrap; line-height: 1.85; }
+.post img.thumb { max-width: 100%; border: 1px solid var(--ink); cursor: pointer; }
+.stats { display: flex; gap: 18px; color: var(--muted); font-size: 13px; letter-spacing: 0.06em; }
+.stats a { color: inherit; text-decoration: none; }
+.stats button { background: none; border: 0; color: inherit; cursor: pointer; padding: 0; font: inherit; }
+.stats .liked { color: var(--seal); }
+
+.user-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 4px;
+  border-bottom: 1px solid var(--line);
+}
+.user-row:last-child { border-bottom: 0; }
+.user-row .grow { flex: 1; }
+
+.counter { text-align: right; font-size: 12px; color: var(--muted); }
+.counter.over { color: var(--danger); }
+
+.demo {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0 0 16px;
+  letter-spacing: 0.04em;
+}
+.demo button { margin: 8px 8px 0 0; }
+
+.empty {
+  color: var(--muted);
+  text-align: center;
+  padding: 40px 8px;
+  letter-spacing: 0.12em;
+}
+
+.modal-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 22, 18, 0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 16px;
+}
+.modal-bg.show { display: flex; }
+.modal {
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 20px;
+  width: min(420px, 100%);
+  box-shadow: 6px 6px 0 rgba(26, 22, 18, 0.12);
+}
+.modal img { max-width: 100%; }
+.modal h2 {
+  font-family: "Yuji Syuku", "Shippori Mincho", serif;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  margin: 0 0 10px;
+}
+
+.flash {
+  border: 1px solid var(--ok);
+  color: var(--ok);
+  padding: 8px 10px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.nav-mini { display: flex; gap: 8px; flex-wrap: wrap; margin: 4px 0 18px; }
+.chip {
+  background: transparent;
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  padding: 5px 10px;
+  font-size: 12px;
+  color: var(--ink);
+  text-decoration: none;
+  letter-spacing: 0.1em;
+}
+.chip:hover { background: var(--ink); color: var(--paper); }
+
+.back-row { display: flex; align-items: center; gap: 8px; margin: 0 0 14px; }
+.back-row a { letter-spacing: 0.08em; }
