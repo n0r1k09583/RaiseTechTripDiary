@@ -24,7 +24,8 @@ description: >-
 - いいね: 行きたい（`POST /api/posts/{id}/likes`）
 - コメント: 行き方・おすすめ
 - フォロー / ユーザー検索
-- タブ: すべて / フォロー中 / 訪問済み / 行きたい / 写真（`tab=photos` は `image_path` あり）
+- タブ: みんなの記録 / フォロー中 / 訪問済み / 行きたい / 写真 / お気に入り（`tab=photos` は `image_path` あり。みんなの記録は公開だけ）
+- 公開 / 非公開。地図クリックで緯度・経度。お気に入りは本人だけ
 - エリア絞り込み
 
 ## 技術
@@ -39,10 +40,12 @@ description: >-
 
 ## 確認
 
+- 提出済み。提出URL: https://github.com/n0r1k09583/RaiseTechTripDiary （public）
 - 画面 http://127.0.0.1:5173/login
 - `@yamada`（山田） `@hanako` `@ichiro` / `password123`
 - 写真共有の見え方は山田の投稿を正とする
 - 答えの一覧は `docs/verify.md`
+- テスト（2026-09-26）: backend 151、frontend 47
 
 ## 起動
 

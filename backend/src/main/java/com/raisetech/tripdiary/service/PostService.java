@@ -5,6 +5,7 @@ import com.raisetech.tripdiary.domain.User;
 import com.raisetech.tripdiary.dto.PostListResponse;
 import com.raisetech.tripdiary.dto.PostResponse;
 import com.raisetech.tripdiary.mapper.CommentMapper;
+import com.raisetech.tripdiary.mapper.FavoriteMapper;
 import com.raisetech.tripdiary.mapper.PostMapper;
 import com.raisetech.tripdiary.mapper.UserMapper;
 import com.raisetech.tripdiary.web.ApiException;
@@ -28,13 +29,16 @@ public class PostService {
   private final PostMapper posts;
   private final UserMapper users;
   private final CommentMapper comments;
+  private final FavoriteMapper favorites;
   private final ImageStore images;
 
-  public PostService(PostMapper posts, UserMapper users, CommentMapper comments, ImageStore images) {
+  public PostService(
+      PostMapper posts, UserMapper users, CommentMapper comments, ImageStore images, FavoriteMapper favorites) {
     this.posts = posts;
     this.users = users;
     this.comments = comments;
     this.images = images;
+    this.favorites = favorites;
   }
 
   public PostListResponse list(
@@ -82,7 +86,7 @@ public class PostService {
 
   public PostResponse get(long viewerId, long id) {
     Post post = posts.findForViewer(id, viewerId);
-    if (post == null) {
+    if (post == null || !PostAccess.canSee(post, viewerId)) {
       throw new ApiException(HttpStatus.NOT_FOUND, "投稿が見つかりません");
     }
     return PostResponse.from(post, viewerId);
@@ -133,8 +137,25 @@ public class PostService {
       String visitStatus,
       String body,
       MultipartFile image) {
+    return create(userId, spotName, areaTag, visitStatus, body, image, null, null, null);
+  }
+
+  @Transactional
+  public PostResponse create(
+      long userId,
+      String spotName,
+      String areaTag,
+      String visitStatus,
+      String body,
+      MultipartFile image,
+      String visibility,
+      String latitude,
+      String longitude) {
     boolean hasImage = image != null && !image.isEmpty();
     String text = requireBody(body, hasImage);
+    Double lat = parseCoord(latitude, -90, 90, "緯度は-90から90です");
+    Double lng = parseCoord(longitude, -180, 180, "経度は-180から180です");
+    requirePair(lat, lng);
     Post post = new Post();
     post.setUserId(userId);
     post.setSpotName(requireSpot(spotName));
@@ -142,6 +163,9 @@ public class PostService {
     post.setVisitStatus(requireStatus(visitStatus));
     post.setBody(text);
     post.setImagePath(images.save(image));
+    post.setVisibility(requireVisibility(visibility));
+    post.setLatitude(lat);
+    post.setLongitude(lng);
     posts.insert(post);
     log.info("投稿を作成 userId={} postId={}", userId, post.getId());
     return PostResponse.from(posts.findForViewer(post.getId(), userId), userId);
@@ -184,9 +208,42 @@ public class PostService {
   }
 
   @Transactional
+  public PostResponse update(
+      long userId,
+      long id,
+      String spotName,
+      String areaTag,
+      String visitStatus,
+      String body,
+      MultipartFile image,
+      String visibility,
+      String latitude,
+      String longitude,
+      boolean replacePlace) {
+    PostResponse updated = update(userId, id, spotName, areaTag, visitStatus, body, image);
+    if (!replacePlace) {
+      return updated;
+    }
+    Post existing = requireOwned(id, userId, "自分の投稿だけ編集できます");
+    if (visibility != null && !visibility.isBlank()) {
+      existing.setVisibility(requireVisibility(visibility));
+    }
+    if (latitude != null || longitude != null) {
+      Double lat = parseCoord(latitude, -90, 90, "緯度は-90から90です");
+      Double lng = parseCoord(longitude, -180, 180, "経度は-180から180です");
+      requirePair(lat, lng);
+      existing.setLatitude(lat);
+      existing.setLongitude(lng);
+    }
+    posts.update(existing);
+    return PostResponse.from(posts.findForViewer(id, userId), userId);
+  }
+
+  @Transactional
   public void delete(long userId, long id) {
     Post existing = requireOwned(id, userId, "自分の投稿だけ削除できます");
     comments.deleteByPostId(id);
+    favorites.deleteByPostId(id);
     posts.deleteById(id);
     images.delete(existing.getImagePath());
     log.info("投稿を削除 userId={} postId={}", userId, id);
@@ -283,10 +340,45 @@ public class PostService {
   }
 
   private static String normalizeTab(String tab) {
-    if ("following".equals(tab) || "visited".equals(tab) || "want".equals(tab) || "photos".equals(tab)) {
+    if ("following".equals(tab)
+        || "visited".equals(tab)
+        || "want".equals(tab)
+        || "photos".equals(tab)
+        || "favorites".equals(tab)) {
       return tab;
     }
     return "all";
+  }
+
+  private static String requireVisibility(String visibility) {
+    if (visibility == null || visibility.isBlank() || "public".equals(visibility)) {
+      return "public";
+    }
+    if ("private".equals(visibility)) {
+      return "private";
+    }
+    throw new ApiException(HttpStatus.BAD_REQUEST, "公開か非公開を選んでください");
+  }
+
+  private static Double parseCoord(String raw, double min, double max, String message) {
+    if (raw == null || raw.isBlank()) {
+      return null;
+    }
+    try {
+      double value = Double.parseDouble(raw.trim());
+      if (Double.isNaN(value) || value < min || value > max) {
+        throw new ApiException(HttpStatus.BAD_REQUEST, message);
+      }
+      return value;
+    } catch (NumberFormatException ex) {
+      throw new ApiException(HttpStatus.BAD_REQUEST, message);
+    }
+  }
+
+  private static void requirePair(Double latitude, Double longitude) {
+    if ((latitude == null) != (longitude == null)) {
+      throw new ApiException(HttpStatus.BAD_REQUEST, "緯度と経度はセットで指定してください");
+    }
   }
 
   private static String blankToNull(String value) {

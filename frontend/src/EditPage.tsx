@@ -1,7 +1,8 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { getPost, updatePost, type User, type VisitStatus } from "./api";
+import { getPost, updatePost, type User, type Visibility, type VisitStatus } from "./api";
 import { AREAS } from "./areas";
 import { AppHeader } from "./AppHeader";
+import { MapPicker } from "./MapPicker";
 import { PhotoField } from "./PhotoField";
 
 const IMAGE_MAX = 5 * 1024 * 1024;
@@ -21,6 +22,9 @@ export function EditPage({ user, postId, onLogout, onDone, onHome, onProfile, on
   const [spotName, setSpotName] = useState("");
   const [areaTag, setAreaTag] = useState("関東");
   const [visitStatus, setVisitStatus] = useState<VisitStatus>("visited");
+  const [visibility, setVisibility] = useState<Visibility>("public");
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [longitude, setLongitude] = useState<number | null>(null);
   const [body, setBody] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [existingUrl, setExistingUrl] = useState<string | null>(null);
@@ -40,6 +44,9 @@ export function EditPage({ user, postId, onLogout, onDone, onHome, onProfile, on
         setSpotName(post.spotName ?? "");
         setAreaTag(post.areaTag || "関東");
         setVisitStatus(post.visitStatus === "want" ? "want" : "visited");
+        setVisibility(post.visibility === "private" ? "private" : "public");
+        setLatitude(post.latitude);
+        setLongitude(post.longitude);
         setBody(post.body);
         setExistingUrl(post.imageUrl);
       })
@@ -82,7 +89,16 @@ export function EditPage({ user, postId, onLogout, onDone, onHome, onProfile, on
     }
     setBusy(true);
     try {
-      await updatePost(postId, { spotName: name, areaTag, visitStatus, body: text, image });
+      await updatePost(postId, {
+        spotName: name,
+        areaTag,
+        visitStatus,
+        body: text,
+        image,
+        visibility,
+        latitude,
+        longitude,
+      });
       onDone();
     } catch (err) {
       setError(err instanceof Error ? err.message : "保存に失敗しました");
@@ -116,6 +132,24 @@ export function EditPage({ user, postId, onLogout, onDone, onHome, onProfile, on
                   {item}
                 </option>
               ))}
+            </select>
+            <label htmlFor="edit-map">地図で位置を置く</label>
+            <MapPicker
+              latitude={latitude}
+              longitude={longitude}
+              onChange={(lat, lng) => {
+                setLatitude(lat);
+                setLongitude(lng);
+              }}
+            />
+            <label htmlFor="edit-visibility">公開</label>
+            <select
+              id="edit-visibility"
+              value={visibility}
+              onChange={(e) => setVisibility(e.target.value as Visibility)}
+            >
+              <option value="public">公開（みんなの記録に出す）</option>
+              <option value="private">非公開（自分だけ）</option>
             </select>
             <label htmlFor="edit-status">記録の種類</label>
             <select

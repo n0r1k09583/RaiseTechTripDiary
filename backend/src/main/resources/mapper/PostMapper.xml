@@ -5,6 +5,7 @@
 
   <sql id="postColumns">
     p.id, p.user_id, p.spot_name, p.area_tag, p.visit_status, p.body, p.image_path,
+    p.latitude, p.longitude, p.visibility,
     p.created_at, p.updated_at,
     u.username, u.display_name,
     (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS comment_count,
@@ -14,7 +15,9 @@
   <sql id="selectPost">
     SELECT <include refid="postColumns"/>,
            (SELECT COUNT(*) FROM likes liked
-            WHERE liked.post_id = p.id AND liked.user_id = #{viewerId}) AS liked_by_me
+            WHERE liked.post_id = p.id AND liked.user_id = #{viewerId}) AS liked_by_me,
+           (SELECT COUNT(*) FROM favorites fav
+            WHERE fav.post_id = p.id AND fav.user_id = #{viewerId}) AS favorited_by_me
     FROM posts p
     JOIN users u ON u.id = p.user_id
   </sql>
@@ -34,22 +37,41 @@
   </sql>
 
   <sql id="tabFilter">
-    <if test="tab == 'following'">
-      AND (p.user_id = #{viewerId}
-        OR p.user_id IN (SELECT followee_id FROM follows WHERE follower_id = #{viewerId}))
-    </if>
-    <if test="tab == 'visited'">
-      AND p.user_id = #{viewerId} AND p.visit_status = 'visited'
-    </if>
-    <if test="tab == 'want'">
-      AND EXISTS (
-        SELECT 1 FROM likes liked
-        WHERE liked.post_id = p.id AND liked.user_id = #{viewerId}
-      )
-    </if>
-    <if test="tab == 'photos'">
-      AND p.image_path IS NOT NULL AND p.image_path != ''
-    </if>
+    <choose>
+      <when test="tab == 'following'">
+        AND (
+          p.user_id = #{viewerId}
+          OR (
+            p.visibility = 'public'
+            AND p.user_id IN (SELECT followee_id FROM follows WHERE follower_id = #{viewerId})
+          )
+        )
+      </when>
+      <when test="tab == 'visited'">
+        AND p.user_id = #{viewerId} AND p.visit_status = 'visited'
+      </when>
+      <when test="tab == 'want'">
+        AND p.visibility = 'public'
+        AND EXISTS (
+          SELECT 1 FROM likes liked
+          WHERE liked.post_id = p.id AND liked.user_id = #{viewerId}
+        )
+      </when>
+      <when test="tab == 'photos'">
+        AND p.visibility = 'public'
+        AND p.image_path IS NOT NULL AND p.image_path != ''
+      </when>
+      <when test="tab == 'favorites'">
+        AND (p.visibility = 'public' OR p.user_id = #{viewerId})
+        AND EXISTS (
+          SELECT 1 FROM favorites fav
+          WHERE fav.post_id = p.id AND fav.user_id = #{viewerId}
+        )
+      </when>
+      <otherwise>
+        AND p.visibility = 'public'
+      </otherwise>
+    </choose>
   </sql>
 
   <sql id="areaFilter">
@@ -60,7 +82,8 @@
 
   <select id="findById" resultType="Post">
     SELECT <include refid="postColumns"/>,
-           0 AS liked_by_me
+           0 AS liked_by_me,
+           0 AS favorited_by_me
     FROM posts p
     JOIN users u ON u.id = p.user_id
     WHERE p.id = #{id}
@@ -85,6 +108,7 @@
   <select id="listByAuthor" resultType="Post">
     <include refid="selectPost"/>
     WHERE p.user_id = #{authorId}
+      AND (p.visibility = 'public' OR p.user_id = #{viewerId})
     <include refid="pageOlder"/>
     <include refid="pageNewer"/>
     ORDER BY p.created_at DESC, p.id DESC
@@ -92,7 +116,10 @@
   </select>
 
   <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-    INSERT INTO posts (user_id, spot_name, area_tag, visit_status, body, image_path, created_at, updated_at)
+    INSERT INTO posts (
+      user_id, spot_name, area_tag, visit_status, body, image_path,
+      latitude, longitude, visibility, created_at, updated_at
+    )
     VALUES (
       #{userId},
       COALESCE(#{spotName}, '未設定'),
@@ -100,6 +127,9 @@
       COALESCE(#{visitStatus}, 'visited'),
       #{body},
       #{imagePath},
+      #{latitude},
+      #{longitude},
+      COALESCE(#{visibility}, 'public'),
       COALESCE(#{createdAt}, CAST(CURRENT_TIMESTAMP AS VARCHAR)),
       COALESCE(#{createdAt}, CAST(CURRENT_TIMESTAMP AS VARCHAR))
     )
@@ -112,6 +142,9 @@
         visit_status = #{visitStatus},
         body = #{body},
         image_path = #{imagePath},
+        latitude = #{latitude},
+        longitude = #{longitude},
+        visibility = COALESCE(#{visibility}, 'public'),
         updated_at = CAST(CURRENT_TIMESTAMP AS VARCHAR)
     WHERE id = #{id}
   </update>

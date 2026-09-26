@@ -28,8 +28,11 @@ public class LikeService {
   @Transactional
   public PostResponse toggle(long userId, long postId) {
     Post post = posts.findById(postId);
-    if (post == null) {
+    if (post == null || !PostAccess.canSee(post, userId)) {
       throw new ApiException(HttpStatus.NOT_FOUND, "投稿が見つかりません");
+    }
+    if (!PostAccess.isPublic(post)) {
+      throw new ApiException(HttpStatus.FORBIDDEN, "公開中の記録にだけいいねできます");
     }
     Like existing = likes.find(postId, userId);
     if (existing == null) {

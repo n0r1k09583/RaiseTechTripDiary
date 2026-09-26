@@ -1,4 +1,4 @@
-import { toggleLike, type Post } from "./api";
+import { toggleFavorite, toggleLike, type Post } from "./api";
 import { formatTime } from "./formatTime";
 
 type Props = {
@@ -8,6 +8,7 @@ type Props = {
   onDelete?: (post: Post) => void;
   onProfile: (username: string) => void;
   onLiked: (post: Post) => void;
+  onFavorited: (post: Post) => void;
   onError: (message: string) => void;
   large?: boolean;
 };
@@ -19,6 +20,7 @@ export function PostCard({
   onDelete,
   onProfile,
   onLiked,
+  onFavorited,
   onError,
   large,
 }: Props) {
@@ -27,6 +29,14 @@ export function PostCard({
       onLiked(await toggleLike(post.id));
     } catch (err) {
       onError(err instanceof Error ? err.message : "行きたいの更新に失敗しました");
+    }
+  }
+
+  async function onFavorite() {
+    try {
+      onFavorited(await toggleFavorite(post.id));
+    } catch (err) {
+      onError(err instanceof Error ? err.message : "お気に入りの更新に失敗しました");
     }
   }
 
@@ -71,6 +81,7 @@ export function PostCard({
               <span className={`badge${post.visitStatus === "want" ? " want" : ""}`}>
                 {post.visitStatus === "want" ? "行きたい" : "訪問済み"}
               </span>
+              {post.visibility === "private" ? <span className="badge private">非公開</span> : null}
             </div>
             {post.imageUrl ? <img className="thumb" src={post.imageUrl} alt={`${spot}の写真`} /> : null}
             {post.body ? <p className="body">{post.body}</p> : null}
@@ -83,6 +94,7 @@ export function PostCard({
               <span className={`badge${post.visitStatus === "want" ? " want" : ""}`}>
                 {post.visitStatus === "want" ? "行きたい" : "訪問済み"}
               </span>
+              {post.visibility === "private" ? <span className="badge private">非公開</span> : null}
             </div>
             {post.imageUrl ? (
               <img className={`thumb${large ? " large" : ""}`} src={post.imageUrl} alt={`${spot}の写真`} />
@@ -90,14 +102,29 @@ export function PostCard({
             {post.body ? <p className="body">{post.body}</p> : null}
           </>
         )}
+        {post.latitude != null && post.longitude != null ? (
+          <p className="meta">位置 {post.latitude.toFixed(4)}, {post.longitude.toFixed(4)}</p>
+        ) : null}
         <div className="stats">
+          {post.visibility === "private" ? (
+            <span>非公開</span>
+          ) : (
+            <button
+              type="button"
+              className={`btn like${post.likedByMe ? " on" : ""}`}
+              aria-pressed={post.likedByMe}
+              onClick={() => void onLike()}
+            >
+              {post.likedByMe ? "♥ 行きたい" : "♡ 行きたい"} {post.likeCount}
+            </button>
+          )}
           <button
             type="button"
-            className={`btn like${post.likedByMe ? " on" : ""}`}
-            aria-pressed={post.likedByMe}
-            onClick={() => void onLike()}
+            className={`btn like${post.favoritedByMe ? " on" : ""}`}
+            aria-pressed={post.favoritedByMe}
+            onClick={() => void onFavorite()}
           >
-            {post.likedByMe ? "♥ 行きたい" : "♡ 行きたい"} {post.likeCount}
+            {post.favoritedByMe ? "★ お気に入り" : "☆ お気に入り"}
           </button>
           {onOpen ? (
             <button type="button" className="btn link" onClick={() => onOpen(post.id)}>

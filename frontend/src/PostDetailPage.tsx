@@ -10,6 +10,7 @@ import {
 } from "./api";
 import { AppHeader } from "./AppHeader";
 import { formatTime } from "./formatTime";
+import { MapPicker } from "./MapPicker";
 import { PostCard } from "./PostCard";
 
 type Props = {
@@ -98,7 +99,7 @@ export function PostDetailPage({ user, postId, onLogout, onBack, onEdit, onProfi
       />
       <p className="back-row">
         <button type="button" className="btn link" onClick={onBack}>
-          ← みんなの旅
+          ← みんなの記録
         </button>
       </p>
       {loading ? <p className="empty">読み込み中…</p> : null}
@@ -110,9 +111,13 @@ export function PostDetailPage({ user, postId, onLogout, onBack, onEdit, onProfi
             onEdit={post.mine ? onEdit : undefined}
             onProfile={onProfile}
             onLiked={setPost}
+            onFavorited={setPost}
             onError={setError}
             large
           />
+          {post.latitude != null && post.longitude != null ? (
+            <MapPicker latitude={post.latitude} longitude={post.longitude} readOnly />
+          ) : null}
         </article>
       ) : null}
 
@@ -146,6 +151,9 @@ export function PostDetailPage({ user, postId, onLogout, onBack, onEdit, onProfi
               </article>
             ))
           )}
+          {post.visibility === "private" ? (
+            <p className="empty">非公開の記録には、いいねとコメントは付きません。</p>
+          ) : (
           <form onSubmit={onSubmit}>
             <label htmlFor="comment-body">コメントを書く</label>
             <textarea
@@ -163,6 +171,7 @@ export function PostDetailPage({ user, postId, onLogout, onBack, onEdit, onProfi
               </button>
             </div>
           </form>
+          )}
         </section>
       ) : null}
 

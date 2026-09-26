@@ -173,6 +173,7 @@ export async function logout() {
 }
 
 export type VisitStatus = "visited" | "want";
+export type Visibility = "public" | "private";
 
 export type Post = {
   id: number;
@@ -184,12 +185,16 @@ export type Post = {
   visitStatus: VisitStatus;
   body: string;
   imageUrl: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  visibility: Visibility;
   createdAt: string;
   updatedAt: string;
   mine: boolean;
   commentCount: number;
   likeCount: number;
   likedByMe: boolean;
+  favoritedByMe: boolean;
 };
 
 export type PostList = {
@@ -198,7 +203,7 @@ export type PostList = {
 };
 
 type ListQuery = {
-  tab?: "all" | "following" | "visited" | "want" | "photos";
+  tab?: "all" | "following" | "visited" | "want" | "photos" | "favorites";
   area?: string;
   limit?: number;
   beforeCreatedAt?: string;
@@ -230,6 +235,9 @@ export type PostInput = {
   visitStatus: VisitStatus;
   body: string;
   image?: File | null;
+  visibility?: Visibility;
+  latitude?: number | null;
+  longitude?: number | null;
 };
 
 export function createPost(input: PostInput) {
@@ -238,6 +246,9 @@ export function createPost(input: PostInput) {
   form.append("areaTag", input.areaTag);
   form.append("visitStatus", input.visitStatus);
   form.append("body", input.body);
+  form.append("visibility", input.visibility ?? "public");
+  form.append("latitude", input.latitude == null ? "" : String(input.latitude));
+  form.append("longitude", input.longitude == null ? "" : String(input.longitude));
   if (input.image) form.append("image", input.image);
   return request<Post>("/api/posts", { method: "POST", body: form });
 }
@@ -248,6 +259,9 @@ export function updatePost(id: number, input: PostInput) {
   form.append("areaTag", input.areaTag);
   form.append("visitStatus", input.visitStatus);
   form.append("body", input.body);
+  form.append("visibility", input.visibility ?? "public");
+  form.append("latitude", input.latitude == null ? "" : String(input.latitude));
+  form.append("longitude", input.longitude == null ? "" : String(input.longitude));
   if (input.image) form.append("image", input.image);
   return request<Post>(`/api/posts/${id}`, { method: "PATCH", body: form });
 }
@@ -284,6 +298,10 @@ export function deleteComment(id: number) {
 
 export function toggleLike(postId: number) {
   return request<Post>(`/api/posts/${postId}/likes`, { method: "POST" });
+}
+
+export function toggleFavorite(postId: number) {
+  return request<Post>(`/api/posts/${postId}/favorites`, { method: "POST" });
 }
 
 export type Profile = {

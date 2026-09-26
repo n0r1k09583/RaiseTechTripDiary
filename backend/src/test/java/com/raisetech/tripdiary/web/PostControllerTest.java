@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.raisetech.tripdiary.dto.PostListResponse;
+import com.raisetech.tripdiary.service.FavoriteService;
 import com.raisetech.tripdiary.service.LikeService;
 import com.raisetech.tripdiary.service.PostService;
 import java.util.List;
@@ -34,6 +35,9 @@ class PostControllerTest {
 
   @MockitoBean
   LikeService likes;
+
+  @MockitoBean
+  FavoriteService favorites;
 
   @Test
   void 投稿0件の一覧は空() throws Exception {
@@ -60,7 +64,7 @@ class PostControllerTest {
 
   @Test
   void 空本文の作成は400() throws Exception {
-    when(posts.create(eq(1L), eq("東京駅"), eq("関東"), eq("visited"), eq("   "), any()))
+    when(posts.create(eq(1L), eq("東京駅"), eq("関東"), eq("visited"), eq("   "), any(), eq("public"), isNull(), isNull()))
         .thenThrow(new ApiException(HttpStatus.BAD_REQUEST, "本文は1〜280文字です"));
 
     mockMvc
@@ -76,7 +80,7 @@ class PostControllerTest {
 
   @Test
   void 非対応画像の作成は400() throws Exception {
-    when(posts.create(eq(1L), eq("東京駅"), eq("関東"), eq("visited"), eq("本文"), any()))
+    when(posts.create(eq(1L), eq("東京駅"), eq("関東"), eq("visited"), eq("本文"), any(), eq("public"), isNull(), isNull()))
         .thenThrow(new ApiException(HttpStatus.BAD_REQUEST, "JPEG / PNG / WebP のみです"));
 
     MockMultipartFile gif = new MockMultipartFile("image", "x.gif", "image/gif", new byte[] {1, 2, 3});
@@ -94,7 +98,7 @@ class PostControllerTest {
 
   @Test
   void 他人の投稿編集は403() throws Exception {
-    when(posts.update(eq(2L), eq(5L), isNull(), isNull(), isNull(), eq("盗む"), any()))
+    when(posts.update(eq(2L), eq(5L), isNull(), isNull(), isNull(), eq("盗む"), any(), isNull(), isNull(), isNull(), eq(true)))
         .thenThrow(new ApiException(HttpStatus.FORBIDDEN, "自分の投稿だけ編集できます"));
 
     mockMvc

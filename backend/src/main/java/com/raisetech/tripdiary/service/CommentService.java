@@ -33,7 +33,7 @@ public class CommentService {
   }
 
   public CommentListResponse list(long viewerId, long postId) {
-    requirePost(postId);
+    requireVisible(postId, viewerId);
     List<CommentResponse> body = comments.listByPostId(postId).stream()
         .map(comment -> CommentResponse.from(comment, viewerId))
         .toList();
@@ -42,7 +42,10 @@ public class CommentService {
 
   @Transactional
   public CommentResponse create(long userId, long postId, String body) {
-    requirePost(postId);
+    Post post = requireVisible(postId, userId);
+    if (!PostAccess.isPublic(post)) {
+      throw new ApiException(HttpStatus.FORBIDDEN, "公開中の記録にだけコメントできます");
+    }
     Comment comment = new Comment();
     comment.setPostId(postId);
     comment.setUserId(userId);
@@ -88,9 +91,9 @@ public class CommentService {
     comments.insert(comment);
   }
 
-  private Post requirePost(long postId) {
+  private Post requireVisible(long postId, long viewerId) {
     Post post = posts.findById(postId);
-    if (post == null) {
+    if (post == null || !PostAccess.canSee(post, viewerId)) {
       throw new ApiException(HttpStatus.NOT_FOUND, "投稿が見つかりません");
     }
     return post;

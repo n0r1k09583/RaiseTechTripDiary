@@ -18,12 +18,16 @@ export function post(overrides: Partial<Post> = {}): Post {
     visitStatus: "visited",
     body: "本文です",
     imageUrl: null,
+    latitude: null,
+    longitude: null,
+    visibility: "public",
     createdAt: "2026-09-01 12:00:00",
     updatedAt: "2026-09-01 12:00:00",
     mine: true,
     commentCount: 0,
     likeCount: 0,
     likedByMe: false,
+    favoritedByMe: false,
     ...overrides,
   };
 }

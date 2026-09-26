@@ -15,12 +15,16 @@ public class PostResponse {
   private String visitStatus;
   private String body;
   private String imageUrl;
+  private Double latitude;
+  private Double longitude;
+  private String visibility;
   private String createdAt;
   private String updatedAt;
   private boolean mine;
   private int commentCount;
   private int likeCount;
   private boolean likedByMe;
+  private boolean favoritedByMe;
 
   public static PostResponse from(Post post, long viewerId) {
     PostResponse response = new PostResponse();
@@ -33,12 +37,18 @@ public class PostResponse {
     response.visitStatus = post.getVisitStatus();
     response.body = post.getBody();
     response.imageUrl = toImageUrl(post.getImagePath());
+    response.latitude = post.getLatitude();
+    response.longitude = post.getLongitude();
+    response.visibility = post.getVisibility() == null || post.getVisibility().isBlank()
+        ? "public"
+        : post.getVisibility();
     response.createdAt = post.getCreatedAt();
     response.updatedAt = post.getUpdatedAt();
     response.mine = post.getUserId() != null && post.getUserId() == viewerId;
     response.commentCount = post.getCommentCount();
     response.likeCount = post.getLikeCount();
     response.likedByMe = post.isLikedByMe();
+    response.favoritedByMe = post.isFavoritedByMe();
     return response;
   }
 
@@ -110,5 +120,21 @@ public class PostResponse {
 
   public boolean isLikedByMe() {
     return likedByMe;
+  }
+
+  public Double getLatitude() {
+    return latitude;
+  }
+
+  public Double getLongitude() {
+    return longitude;
+  }
+
+  public String getVisibility() {
+    return visibility;
+  }
+
+  public boolean isFavoritedByMe() {
+    return favoritedByMe;
   }
 }

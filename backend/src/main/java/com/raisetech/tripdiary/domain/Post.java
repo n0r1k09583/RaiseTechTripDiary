@@ -9,6 +9,9 @@ public class Post {
   private String visitStatus;
   private String body;
   private String imagePath;
+  private Double latitude;
+  private Double longitude;
+  private String visibility;
   private String createdAt;
   private String updatedAt;
   private String username;
@@ -16,6 +19,7 @@ public class Post {
   private int commentCount;
   private int likeCount;
   private boolean likedByMe;
+  private boolean favoritedByMe;
 
   public Long getId() {
     return id;
@@ -73,6 +77,30 @@ public class Post {
     this.imagePath = imagePath;
   }
 
+  public Double getLatitude() {
+    return latitude;
+  }
+
+  public void setLatitude(Double latitude) {
+    this.latitude = latitude;
+  }
+
+  public Double getLongitude() {
+    return longitude;
+  }
+
+  public void setLongitude(Double longitude) {
+    this.longitude = longitude;
+  }
+
+  public String getVisibility() {
+    return visibility;
+  }
+
+  public void setVisibility(String visibility) {
+    this.visibility = visibility;
+  }
+
   public String getCreatedAt() {
     return createdAt;
   }
@@ -127,5 +155,13 @@ public class Post {
 
   public void setLikedByMe(boolean likedByMe) {
     this.likedByMe = likedByMe;
+  }
+
+  public boolean isFavoritedByMe() {
+    return favoritedByMe;
+  }
+
+  public void setFavoritedByMe(boolean favoritedByMe) {
+    this.favoritedByMe = favoritedByMe;
   }
 }

@@ -166,6 +166,24 @@ class PostMapperTest {
         .containsExactly("函館");
   }
 
+  @Test
+  void 非公開はみんなの記録に出ない() {
+    User me = user("priv@example.com", "priv_user", "非公開");
+    User them = user("pub@example.com", "pub_user", "公開");
+    Post hidden = post(me.getId(), "秘密の浜", "沖縄", "visited", "非公開の本文", "2026-09-02 10:00:00");
+    hidden.setVisibility("private");
+    posts.update(hidden);
+    post(them.getId(), "東京駅", "関東", "visited", "公開の本文", "2026-09-02 11:00:00");
+
+    assertThat(posts.list(them.getId(), "all", null, 20, null, null, null, null))
+        .extracting(Post::getBody)
+        .contains("公開の本文")
+        .doesNotContain("非公開の本文");
+    assertThat(posts.list(me.getId(), "visited", null, 20, null, null, null, null))
+        .extracting(Post::getBody)
+        .contains("非公開の本文");
+  }
+
   private User user(String email, String username, String displayName) {
     User user = new User();
     user.setEmail(email);

@@ -23,8 +23,8 @@ class FlywayMigrationTest {
   @Test
   void appliesUsersThroughFollowsOnH2() {
     assertNotNull(flyway.info().current());
-    assertEquals("6", flyway.info().current().getVersion().getVersion());
-    assertEquals(6, flyway.info().applied().length);
+    assertEquals("7", flyway.info().current().getVersion().getVersion());
+    assertEquals(7, flyway.info().applied().length);
 
     MigrateResult result = flyway.migrate();
     assertEquals(0, result.migrationsExecuted);
@@ -35,11 +35,13 @@ class FlywayMigrationTest {
     Integer comments = jdbc.queryForObject("SELECT COUNT(*) FROM comments", Integer.class);
     Integer likes = jdbc.queryForObject("SELECT COUNT(*) FROM likes", Integer.class);
     Integer follows = jdbc.queryForObject("SELECT COUNT(*) FROM follows", Integer.class);
+    Integer favorites = jdbc.queryForObject("SELECT COUNT(*) FROM favorites", Integer.class);
     assertTrue(users != null && users >= 3);
     assertTrue(refreshTokens != null && refreshTokens >= 0);
     assertTrue(posts != null && posts >= 1);
     assertTrue(comments != null && comments >= 1);
     assertTrue(likes != null && likes >= 0);
     assertTrue(follows != null && follows >= 0);
+    assertTrue(favorites != null && favorites >= 0);
   }
 }

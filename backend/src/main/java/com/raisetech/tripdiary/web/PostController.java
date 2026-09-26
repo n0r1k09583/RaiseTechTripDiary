@@ -4,6 +4,7 @@ import com.raisetech.tripdiary.config.OpenApiConfig;
 import com.raisetech.tripdiary.dto.ErrorResponse;
 import com.raisetech.tripdiary.dto.PostListResponse;
 import com.raisetech.tripdiary.dto.PostResponse;
+import com.raisetech.tripdiary.service.FavoriteService;
 import com.raisetech.tripdiary.service.LikeService;
 import com.raisetech.tripdiary.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,10 +48,12 @@ public class PostController {
 
   private final PostService posts;
   private final LikeService likes;
+  private final FavoriteService favorites;
 
-  public PostController(PostService posts, LikeService likes) {
+  public PostController(PostService posts, LikeService likes, FavoriteService favorites) {
     this.posts = posts;
     this.likes = likes;
+    this.favorites = favorites;
   }
 
   @GetMapping
@@ -129,8 +132,13 @@ public class PostController {
       @Parameter(description = "感想。写真があれば空でも可。最大280文字") @RequestParam(required = false, defaultValue = "")
           String body,
       @Parameter(description = "任意。JPEG / PNG / WebP、5MBまで") @RequestParam(required = false)
-          MultipartFile image) {
-    return posts.create(userId(request), spotName, areaTag, visitStatus, body, image);
+          MultipartFile image,
+      @Parameter(description = "public=みんなの記録に出す。private=本人だけ") @RequestParam(defaultValue = "public")
+          String visibility,
+      @Parameter(description = "緯度。経度とセット。空なら未設定") @RequestParam(required = false) String latitude,
+      @Parameter(description = "経度。緯度とセット。空なら未設定") @RequestParam(required = false) String longitude) {
+    return posts.create(
+        userId(request), spotName, areaTag, visitStatus, body, image, visibility, latitude, longitude);
   }
 
   @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -163,8 +171,13 @@ public class PostController {
       @Parameter(description = "感想。写真があれば空でも可。最大280文字") @RequestParam(required = false, defaultValue = "")
           String body,
       @Parameter(description = "任意。省略時は既存画像のまま") @RequestParam(required = false)
-          MultipartFile image) {
-    return posts.update(userId(request), id, spotName, areaTag, visitStatus, body, image);
+          MultipartFile image,
+      @Parameter(description = "public か private。省略時は現状のまま") @RequestParam(required = false)
+          String visibility,
+      @Parameter(description = "緯度。空文字で位置を消す") @RequestParam(required = false) String latitude,
+      @Parameter(description = "経度。空文字で位置を消す") @RequestParam(required = false) String longitude) {
+    return posts.update(
+        userId(request), id, spotName, areaTag, visitStatus, body, image, visibility, latitude, longitude, true);
   }
 
   @DeleteMapping("/{id}")
@@ -198,6 +211,20 @@ public class PostController {
   public PostResponse toggleLike(
       HttpServletRequest request, @Parameter(description = "投稿ID") @PathVariable long id) {
     return likes.toggle(userId(request), id);
+  }
+
+  @PostMapping("/{id}/favorites")
+  @Operation(summary = "お気に入りをトグル", description = "本人の一覧だけに出る。他人のお気に入りは見えない。")
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "トグル後の投稿（favoritedByMe）"),
+    @ApiResponse(
+        responseCode = "404",
+        description = "投稿が無い、または非公開で本人以外",
+        content = @Content(mediaType = ERROR_JSON, schema = @Schema(implementation = ErrorResponse.class)))
+  })
+  public PostResponse toggleFavorite(
+      HttpServletRequest request, @Parameter(description = "投稿ID") @PathVariable long id) {
+    return favorites.toggle(userId(request), id);
   }
 
   private static long userId(HttpServletRequest request) {

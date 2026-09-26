@@ -539,6 +539,25 @@ textarea {
   color: var(--seal);
 }
 
+.badge.private {
+  background: #eef2f5;
+  color: var(--muted);
+}
+
+.map-pick {
+  height: 240px;
+  margin: 8px 0 4px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.map-pick .leaflet-container {
+  height: 100%;
+  width: 100%;
+  z-index: 0;
+  font: inherit;
+}
+
 .body {
   margin: 8px 0;
   white-space: pre-wrap;

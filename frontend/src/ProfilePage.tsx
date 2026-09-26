@@ -88,7 +88,7 @@ export function ProfilePage({
       />
       <p className="back-row">
         <button type="button" className="btn link" onClick={onHome}>
-          ← みんなの旅
+          ← みんなの記録
         </button>
       </p>
       {loading ? <p className="empty">読み込み中…</p> : null}
@@ -96,7 +96,10 @@ export function ProfilePage({
       {profile ? (
         <section className="card">
           <h1>{profile.displayName}</h1>
-          <p className="lead">@{profile.username}</p>
+          <p className="lead">
+            @{profile.username}
+            {profile.mine ? " ・ 自分の記録（非公開も含む）" : " ・ 公開中の記録"}
+          </p>
           <div className="counts">
             <button type="button" className="btn link" onClick={() => onFollows(username, "followees")}>
               フォロー {profile.followingCount}
@@ -122,6 +125,9 @@ export function ProfilePage({
               onEdit={item.mine ? onEdit : undefined}
               onProfile={onProfile}
               onLiked={(next) =>
+                setPosts((prev) => prev.map((row) => (row.id === next.id ? next : row)))
+              }
+              onFavorited={(next) =>
                 setPosts((prev) => prev.map((row) => (row.id === next.id ? next : row)))
               }
               onError={setError}

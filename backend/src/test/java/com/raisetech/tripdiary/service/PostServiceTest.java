@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 
 import com.raisetech.tripdiary.domain.Post;
 import com.raisetech.tripdiary.mapper.CommentMapper;
+import com.raisetech.tripdiary.mapper.FavoriteMapper;
 import com.raisetech.tripdiary.mapper.PostMapper;
 import com.raisetech.tripdiary.mapper.UserMapper;
 import com.raisetech.tripdiary.web.ApiException;
@@ -38,11 +39,14 @@ class PostServiceTest {
   @Mock
   ImageStore images;
 
+  @Mock
+  FavoriteMapper favorites;
+
   PostService service;
 
   @BeforeEach
   void setUp() {
-    service = new PostService(posts, users, comments, images);
+    service = new PostService(posts, users, comments, images, favorites);
   }
 
   @Test

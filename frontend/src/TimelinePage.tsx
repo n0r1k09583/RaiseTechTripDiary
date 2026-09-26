@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { createPost, deletePost, listPosts, type Post, type User, type VisitStatus } from "./api";
+import { createPost, deletePost, listPosts, type Post, type User, type Visibility, type VisitStatus } from "./api";
 import { AREAS } from "./areas";
 import { AppHeader } from "./AppHeader";
+import { MapPicker } from "./MapPicker";
 import { PhotoField } from "./PhotoField";
 import { PostCard } from "./PostCard";
 
@@ -10,7 +11,7 @@ const REFRESH_MS = 30_000;
 const IMAGE_MAX = 5 * 1024 * 1024;
 const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
-type Tab = "all" | "following" | "visited" | "want" | "photos";
+type Tab = "all" | "following" | "visited" | "want" | "photos" | "favorites";
 
 type Props = {
   user: User;
@@ -33,6 +34,9 @@ export function TimelinePage({ user, onLogout, onEdit, onOpen, onProfile, onHome
   const [spotName, setSpotName] = useState("");
   const [areaTag, setAreaTag] = useState("関東");
   const [visitStatus, setVisitStatus] = useState<VisitStatus>("visited");
+  const [visibility, setVisibility] = useState<Visibility>("public");
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [longitude, setLongitude] = useState<number | null>(null);
   const [body, setBody] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
@@ -214,14 +218,31 @@ export function TimelinePage({ user, onLogout, onEdit, onOpen, onProfile, onHome
     }
     setBusy(true);
     try {
-      const created = await createPost({ spotName: name, areaTag, visitStatus, body: text, image });
-      setPosts((prev) => [created, ...prev.filter((p) => p.id !== created.id)]);
-      setFresh((prev) => prev.filter((p) => p.id !== created.id));
+      const created = await createPost({
+        spotName: name,
+        areaTag,
+        visitStatus,
+        body: text,
+        image,
+        visibility,
+        latitude,
+        longitude,
+      });
       setSpotName("");
       setBody("");
       setImage(null);
-      setTab("all");
-      showPostedNotice(image ? "写真をみんなと共有しました" : "記録しました");
+      setVisibility("public");
+      setLatitude(null);
+      setLongitude(null);
+      if (created.visibility === "private") {
+        setTab("visited");
+        showPostedNotice("非公開で保存しました");
+      } else {
+        setPosts((prev) => [created, ...prev.filter((p) => p.id !== created.id)]);
+        setFresh((prev) => prev.filter((p) => p.id !== created.id));
+        setTab("all");
+        showPostedNotice(image ? "写真をみんなと共有しました" : "記録しました");
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "投稿に失敗しました");
     } finally {
@@ -250,7 +271,9 @@ export function TimelinePage({ user, onLogout, onEdit, onOpen, onProfile, onHome
           ? "行きたいリストはまだ空です。♡行きたい を押すとここに入ります"
           : tab === "photos"
             ? "写真つきの記録はまだありません。上から写真を投稿できます"
-            : "まだ旅の記録はありません。";
+            : tab === "favorites"
+              ? "お気に入りはまだありません。記録の☆を押すと、自分だけが見られます"
+              : "まだ旅の記録はありません。";
 
   return (
     <main className="page">
@@ -273,7 +296,7 @@ export function TimelinePage({ user, onLogout, onEdit, onOpen, onProfile, onHome
       ) : null}
       <section className="card feed-card">
         <div className="feed-head">
-          <h1>みんなの旅</h1>
+          <h1>みんなの記録</h1>
           <p className="lead">
             写真と感想をみんなと共有して、次の行き先を見つけます。
             <button type="button" className="btn link" onClick={() => bodyRef.current?.focus()}>
@@ -304,6 +327,24 @@ export function TimelinePage({ user, onLogout, onEdit, onOpen, onProfile, onHome
                 </select>
               </div>
             </div>
+            <label htmlFor="place-map">地図で位置を置く</label>
+            <MapPicker
+              latitude={latitude}
+              longitude={longitude}
+              onChange={(lat, lng) => {
+                setLatitude(lat);
+                setLongitude(lng);
+              }}
+            />
+            <label htmlFor="visibility">公開</label>
+            <select
+              id="visibility"
+              value={visibility}
+              onChange={(e) => setVisibility(e.target.value as Visibility)}
+            >
+              <option value="public">公開（みんなの記録に出す）</option>
+              <option value="private">非公開（自分だけ）</option>
+            </select>
             <label htmlFor="visitStatus">記録の種類</label>
             <select
               id="visitStatus"
@@ -326,7 +367,7 @@ export function TimelinePage({ user, onLogout, onEdit, onOpen, onProfile, onHome
             <div className="err">{error}</div>
             <div className="row-actions">
               <button className="btn" type="submit" disabled={busy}>
-                みんなと共有する
+                {visibility === "private" ? "非公開で保存する" : "みんなと共有する"}
               </button>
             </div>
           </form>
@@ -344,7 +385,7 @@ export function TimelinePage({ user, onLogout, onEdit, onOpen, onProfile, onHome
         </div>
         <div className="tabs" role="tablist">
           <button type="button" className={`tab${tab === "all" ? " active" : ""}`} onClick={() => setTab("all")}>
-            すべて
+            みんなの記録
           </button>
           <button
             type="button"
@@ -370,6 +411,13 @@ export function TimelinePage({ user, onLogout, onEdit, onOpen, onProfile, onHome
           >
             写真
           </button>
+          <button
+            type="button"
+            className={`tab${tab === "favorites" ? " active" : ""}`}
+            onClick={() => setTab("favorites")}
+          >
+            お気に入り
+          </button>
         </div>
         <div>
           {loading && posts.length === 0 ? <p className="empty">読み込み中…</p> : null}
@@ -385,6 +433,13 @@ export function TimelinePage({ user, onLogout, onEdit, onOpen, onProfile, onHome
               onLiked={(next) =>
                 setPosts((prev) => prev.map((row) => (row.id === next.id ? next : row)))
               }
+              onFavorited={(next) => {
+                if (tab === "favorites" && !next.favoritedByMe) {
+                  setPosts((prev) => prev.filter((row) => row.id !== next.id));
+                  return;
+                }
+                setPosts((prev) => prev.map((row) => (row.id === next.id ? next : row)));
+              }}
               onError={setError}
             />
           ))}
