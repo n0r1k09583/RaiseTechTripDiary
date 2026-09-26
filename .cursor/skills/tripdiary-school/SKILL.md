@@ -72,6 +72,7 @@ gh repo create RaiseTechTripDiary --public --source=. --remote=origin --push
 - 提出URLは https://github.com/n0r1k09583/RaiseTechTripDiary
 - README は目次、確認アカウント、動作の画像、機能、技術、動かし方、CI、AWS は定義だけ
 - 写真は `PhotoField`。感想がなくても写真だけで投稿可
-- タブ: みんなの記録 / フォロー中 / 訪問済み / 行きたい / 写真 / お気に入り。みんなの記録は公開だけ。お気に入りは本人だけ。地図クリックで緯度・経度
-- テスト: backend 151、frontend 47。CI は `.github/workflows/ci.yml`。k6 / E2E は毎回のテストに載せない
-- フォームのコメントは `docs/提出の案内.txt`
+- タブ: みんなの記録 / フォロー中 / 訪問済み / 行きたい / 写真 / お気に入り / 旅行プラン。みんなの記録は公開だけ。お気に入りは本人だけ。地図クリックで緯度・経度
+- 旅行プランは世界地図と、そらとの相談。都市が変わったらその都市の観光地を答える
+- テスト: backend 151、frontend 47（2026-09-26）。案内の追加テストは `frontend` の `npm test`。CI は `.github/workflows/ci.yml`。k6 / E2E は毎回のテストに載せない
+- フォームのコメントは `docs/提出の案内.txt`。提出URLはリポジトリのルートのまま（`/blob/` は不可）

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { createPost, deletePost, listPosts, type Post, type User, type Visibility, type VisitStatus } from "./api";
 import { AREAS } from "./areas";
 import { AppHeader } from "./AppHeader";
+import { GuideWalker } from "./GuideWalker";
 import { MapPicker } from "./MapPicker";
 import { PhotoField } from "./PhotoField";
 import { PostCard } from "./PostCard";
@@ -11,7 +12,7 @@ const REFRESH_MS = 30_000;
 const IMAGE_MAX = 5 * 1024 * 1024;
 const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
-type Tab = "all" | "following" | "visited" | "want" | "photos" | "favorites";
+type Tab = "all" | "following" | "visited" | "want" | "photos" | "favorites" | "plan";
 
 type Props = {
   user: User;
@@ -59,6 +60,10 @@ export function TimelinePage({ user, onLogout, onEdit, onOpen, onProfile, onHome
   loadingMoreRef.current = loadingMore;
 
   useEffect(() => {
+    if (tab === "plan") {
+      setLoading(false);
+      return;
+    }
     let cancelled = false;
     setFresh([]);
     setLoading(true);
@@ -100,6 +105,7 @@ export function TimelinePage({ user, onLogout, onEdit, onOpen, onProfile, onHome
     async function refreshQuietly() {
       if (document.visibilityState !== "visible") return;
       const currentTab = tabRef.current;
+      if (currentTab === "plan") return;
       const head = postsRef.current[0];
       if (!head) return;
       try {
@@ -160,14 +166,15 @@ export function TimelinePage({ user, onLogout, onEdit, onOpen, onProfile, onHome
   }
 
   async function loadOlder() {
-    if (loading || loadingMoreRef.current || !hasMoreRef.current) return;
+    const currentTab = tabRef.current;
+    if (currentTab === "plan" || loading || loadingMoreRef.current || !hasMoreRef.current) return;
     const last = postsRef.current[postsRef.current.length - 1];
     if (!last) return;
     loadingMoreRef.current = true;
     setLoadingMore(true);
     try {
       const res = await listPosts({
-        tab: tabRef.current,
+        tab: currentTab,
         area: areaRef.current || undefined,
         limit: PAGE,
         beforeCreatedAt: last.createdAt,
@@ -295,6 +302,8 @@ export function TimelinePage({ user, onLogout, onEdit, onOpen, onProfile, onHome
         </button>
       ) : null}
       <section className="card feed-card">
+        {tab === "plan" ? null : (
+        <>
         <div className="feed-head">
           <h1>みんなの記録</h1>
           <p className="lead">
@@ -383,6 +392,8 @@ export function TimelinePage({ user, onLogout, onEdit, onOpen, onProfile, onHome
             ))}
           </select>
         </div>
+        </>
+        )}
         <div className="tabs" role="tablist">
           <button type="button" className={`tab${tab === "all" ? " active" : ""}`} onClick={() => setTab("all")}>
             みんなの記録
@@ -418,7 +429,17 @@ export function TimelinePage({ user, onLogout, onEdit, onOpen, onProfile, onHome
           >
             お気に入り
           </button>
+          <button
+            type="button"
+            className={`tab${tab === "plan" ? " active" : ""}`}
+            onClick={() => setTab("plan")}
+          >
+            旅行プラン
+          </button>
         </div>
+        {tab === "plan" ? (
+          <GuideWalker displayName={user.displayName} />
+        ) : (
         <div>
           {loading && posts.length === 0 ? <p className="empty">読み込み中…</p> : null}
           {!loading && posts.length === 0 ? <p className="empty">{emptyMessage}</p> : null}
@@ -446,6 +467,7 @@ export function TimelinePage({ user, onLogout, onEdit, onOpen, onProfile, onHome
           <div ref={sentinelRef} className="scroll-sentinel" />
           {loadingMore ? <p className="empty">続きを読み込み中…</p> : null}
         </div>
+        )}
       </section>
       {confirm ? (
         <div className="modal-bg show">

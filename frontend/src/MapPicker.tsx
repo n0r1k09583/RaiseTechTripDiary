@@ -9,9 +9,10 @@ type Props = {
   longitude: number | null;
   onChange?: (latitude: number | null, longitude: number | null) => void;
   readOnly?: boolean;
+  world?: boolean;
 };
 
-export function MapPicker({ latitude, longitude, onChange, readOnly }: Props) {
+export function MapPicker({ latitude, longitude, onChange, readOnly, world }: Props) {
   const host = useRef<HTMLDivElement>(null);
   const mapRef = useRef<LeafletMap | null>(null);
   const markerRef = useRef<Marker | null>(null);
@@ -33,8 +34,9 @@ export function MapPicker({ latitude, longitude, onChange, readOnly }: Props) {
         iconAnchor: [12, 41],
       });
       const start: [number, number] =
-        latitude != null && longitude != null ? [latitude, longitude] : [36.2, 138.2];
-      map = L.map(host.current).setView(start, latitude != null ? 11 : 5);
+        latitude != null && longitude != null ? [latitude, longitude] : world ? [20, 0] : [36.2, 138.2];
+      const zoom = latitude != null ? 11 : world ? 2 : 5;
+      map = L.map(host.current, { worldCopyJump: true, minZoom: 2 }).setView(start, zoom);
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "&copy; OpenStreetMap",
       }).addTo(map);
@@ -99,7 +101,7 @@ export function MapPicker({ latitude, longitude, onChange, readOnly }: Props) {
 
   return (
     <div>
-      <div ref={host} className="map-pick" />
+      <div ref={host} className={world ? "map-pick world" : "map-pick"} />
       {!readOnly && latitude != null ? (
         <button type="button" className="btn link" onClick={() => onChange?.(null, null)}>
           位置を消す

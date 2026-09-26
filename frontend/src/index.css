@@ -551,6 +551,10 @@ textarea {
   overflow: hidden;
 }
 
+.map-pick.world {
+  height: 200px;
+}
+
 .map-pick .leaflet-container {
   height: 100%;
   width: 100%;
@@ -654,4 +658,316 @@ textarea {
 .post-detail .post {
   border-bottom: 0;
   padding: 0;
+}
+
+.plan-room {
+  margin: 4px 0 8px;
+}
+
+.plan-room-head {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.plan-lane {
+  position: relative;
+  height: 86px;
+  margin-bottom: 4px;
+  overflow: hidden;
+  container-type: inline-size;
+}
+
+.plan-walker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  animation: plan-pace 8s linear infinite;
+}
+
+.plan-room-head p {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.plan-room-head span {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.plan-map-label {
+  margin: 8px 0 0;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.stewardess {
+  display: block;
+  width: 78px;
+  height: auto;
+  overflow: visible;
+}
+
+.stew-shadow {
+  fill: rgba(22, 50, 74, 0.16);
+}
+
+.flag-pole {
+  stroke: #8d6a43;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.flag-cloth {
+  fill: #fff;
+  stroke: #7ec8e8;
+  stroke-width: 1.5;
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: flag-flutter 2.8s ease-in-out infinite;
+}
+
+.flag-word {
+  fill: #1d4e79;
+  font-size: 22px;
+  font-weight: 700;
+  font-family: "Segoe UI", "Hiragino Sans", sans-serif;
+  letter-spacing: 0.04em;
+}
+
+.hair {
+  fill: #6b3a32;
+}
+
+.face {
+  fill: #ffd8c2;
+}
+
+.hat,
+.hat-band,
+.jacket,
+.skirt,
+.shoe {
+  fill: #1d4e79;
+}
+
+.hat-band {
+  fill: #16324a;
+}
+
+.pin {
+  fill: #f4d35e;
+}
+
+.eye-white,
+.eye-shine,
+.collar,
+.glove {
+  fill: #fff;
+}
+
+.eye {
+  fill: #3a2a44;
+}
+
+.blush {
+  fill: #f3a0b5;
+  opacity: 0.85;
+}
+
+.smile {
+  fill: none;
+  stroke: #c46b78;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.scarf {
+  fill: #e07a3d;
+}
+
+.stocking {
+  fill: #f3c7b4;
+}
+
+.arm {
+  fill: none;
+  stroke: #1d4e79;
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+
+.guide-chat {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.guide-chat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.guide-chat-head p {
+  margin: 0;
+  font-weight: 700;
+}
+
+.guide-chat-head span {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.guide-log {
+  overflow: auto;
+  margin: 8px 0;
+  min-height: 140px;
+}
+
+.guide-bubble {
+  margin: 0 0 8px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: #e7f5fb;
+}
+
+.guide-bubble p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.guide-bubble.mine {
+  margin-left: 36px;
+  background: #fff4ea;
+}
+
+.guide-plan {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.guide-plan button {
+  display: grid;
+  width: 100%;
+  margin-top: 6px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 12px;
+  background: #fff;
+  color: var(--text);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.guide-when {
+  font-size: 12px;
+  color: var(--accent);
+}
+
+.guide-plan span:last-child {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.guide-wait {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.guide-quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.guide-quick button {
+  border: 0;
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: #e7f5fb;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.guide-quick button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.guide-form {
+  display: flex;
+  gap: 8px;
+}
+
+.guide-form input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid #d5e8f2;
+  border-radius: 999px;
+  padding: 8px 12px;
+  font: inherit;
+}
+
+@keyframes flag-flutter {
+  0%,
+  100% {
+    transform: skewY(0deg);
+  }
+  50% {
+    transform: skewY(2deg);
+  }
+}
+
+.leg {
+  transform-box: fill-box;
+  transform-origin: center top;
+}
+
+.leg.far {
+  animation: plan-step 0.42s ease-in-out infinite alternate;
+}
+
+.leg.near {
+  animation: plan-step 0.42s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes plan-pace {
+  from {
+    transform: translateX(-90px);
+  }
+  to {
+    transform: translateX(100cqi);
+  }
+}
+
+@keyframes plan-step {
+  from {
+    transform: rotate(18deg);
+  }
+  to {
+    transform: rotate(-16deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flag-cloth,
+  .plan-walker,
+  .leg {
+    animation: none;
+  }
 }

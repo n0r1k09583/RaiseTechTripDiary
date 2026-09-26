@@ -177,8 +177,9 @@ export function App() {
     );
   }
 
+  let page;
   if (screen.name === "edit") {
-    return (
+    page = (
       <EditPage
         user={user}
         postId={screen.postId}
@@ -189,10 +190,8 @@ export function App() {
         onSearch={goSearch}
       />
     );
-  }
-
-  if (screen.name === "post") {
-    return (
+  } else if (screen.name === "post") {
+    page = (
       <PostDetailPage
         user={user}
         postId={screen.postId}
@@ -203,10 +202,8 @@ export function App() {
         onSearch={goSearch}
       />
     );
-  }
-
-  if (screen.name === "profile") {
-    return (
+  } else if (screen.name === "profile") {
+    page = (
       <ProfilePage
         user={user}
         username={screen.username}
@@ -219,10 +216,8 @@ export function App() {
         onFollows={goFollows}
       />
     );
-  }
-
-  if (screen.name === "follows") {
-    return (
+  } else if (screen.name === "follows") {
+    page = (
       <FollowListPage
         user={user}
         username={screen.username}
@@ -234,10 +229,8 @@ export function App() {
         onFollows={goFollows}
       />
     );
-  }
-
-  if (screen.name === "search") {
-    return (
+  } else if (screen.name === "search") {
+    page = (
       <SearchPage
         user={user}
         q={screen.q}
@@ -247,17 +240,19 @@ export function App() {
         onSearch={goSearch}
       />
     );
+  } else {
+    page = (
+      <TimelinePage
+        user={user}
+        onLogout={onLogout}
+        onEdit={goEdit}
+        onOpen={goPost}
+        onProfile={goProfile}
+        onHome={goTimeline}
+        onSearch={goSearch}
+      />
+    );
   }
 
-  return (
-    <TimelinePage
-      user={user}
-      onLogout={onLogout}
-      onEdit={goEdit}
-      onOpen={goPost}
-      onProfile={goProfile}
-      onHome={goTimeline}
-      onSearch={goSearch}
-    />
-  );
+  return page;
 }
